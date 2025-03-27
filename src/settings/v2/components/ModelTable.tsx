@@ -46,6 +46,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ModelCapabilityIcons } from "@/components/ui/model-display";
 import { MODEL_CAPABILITIES, ModelCapability } from "@/constants";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 
 const CAPABILITY_ICONS: Record<
   ModelCapability,
@@ -129,6 +130,7 @@ interface ModelCardProps {
 
 const ModelCard: React.FC<ModelCardProps> = ({ model, onEdit, onDelete, onUpdateModel, id }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const { t } = useTranslation();
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
@@ -235,7 +237,7 @@ const ModelCard: React.FC<ModelCardProps> = ({ model, onEdit, onDelete, onUpdate
           <div className="flex justify-around">
             {!model.isEmbeddingModel && (
               <div className="flex items-center gap-2">
-                <span className="text-sm">Enabled</span>
+                <span className="text-sm">{t("modelSettings.enabled")}</span>
                 <Checkbox
                   checked={model.enabled}
                   onCheckedChange={(checked: boolean) =>
@@ -360,6 +362,7 @@ export const ModelTable: React.FC<ModelTableProps> = ({
   title,
 }) => {
   const isEmbeddingModel = !!(models.length > 0 && models[0].isEmbeddingModel);
+  const { t } = useTranslation();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -482,12 +485,18 @@ export const ModelTable: React.FC<ModelTableProps> = ({
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-6 px-2"></TableHead>
-                  <TableHead className="pl-0">Model</TableHead>
-                  <TableHead>Provider</TableHead>
-                  <TableHead className="text-center">Capabilities</TableHead>
-                  {!isEmbeddingModel && <TableHead className="text-center">Enable</TableHead>}
+                  <TableHead className="pl-0">{t("modelSettings.model")}</TableHead>
+                  <TableHead>{t("modelSettings.provider")}</TableHead>
+                  <TableHead className="text-center">
+                    {t("modelSettings.capabilities.title")}
+                  </TableHead>
+                  {!isEmbeddingModel && (
+                    <TableHead className="text-center">{t("modelSettings.enabled")}</TableHead>
+                  )}
                   <TableHead className="text-center">CORS</TableHead>
-                  <TableHead className="w-[100px] text-center">Actions</TableHead>
+                  <TableHead className="w-[100px] text-center">
+                    {t("modelSettings.actions")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="relative">
@@ -518,7 +527,7 @@ export const ModelTable: React.FC<ModelTableProps> = ({
       <div className="mt-4 flex justify-end">
         <Button onClick={onAdd} variant="secondary" className="flex items-center gap-2">
           <Plus className="h-4 w-4" />
-          Add Custom Model
+          {t("modelSettings.addCustomModel")}
         </Button>
       </div>
     </div>

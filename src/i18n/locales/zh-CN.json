@@ -1,0 +1,201 @@
+{
+  "common": {
+    "loading": "加载中",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "close": "关闭",
+    "send": "发送",
+    "reset": "重置",
+    "search": "搜索",
+    "upload": "上传",
+    "download": "下载",
+    "copy": "复制",
+    "paste": "粘贴",
+    "error": "错误",
+    "success": "成功",
+    "warning": "警告",
+    "info": "信息",
+    "apply": "应用"
+  },
+  "chat": {
+    "newChat": "新建聊天",
+    "clearChat": "清空聊天",
+    "saveChat": "保存聊天",
+    "includeActiveNote": "包含当前笔记",
+    "addContextNotes": "添加上下文笔记",
+    "sendMessage": "发送消息",
+    "typeMessage": "输入消息...",
+    "copiedToClipboard": "已复制到剪贴板",
+    "stop": "停止",
+    "continue": "继续",
+    "regenerate": "重新生成",
+    "uploadImage": "上传图片",
+    "loadingMessages": {
+      "default": "",
+      "readingFiles": "正在读取文件",
+      "searchingWeb": "正在搜索网络",
+      "readingFileTree": "正在读取文件树"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "setKeys": "设置密钥",
+    "apiKeyRequired": "聊天和问答功能需要API密钥",
+    "apiKeyDescription": "要启用聊天和问答功能，请提供所选提供商的API密钥。",
+    "tabs": {
+      "basic": "基础",
+      "model": "模型",
+      "QA": "问答",
+      "command": "命令",
+      "advanced": "高级"
+    },
+    "resetSettings": "重置设置",
+    "resetSettingsConfirm": "确定要重置所有设置吗？此操作无法撤销。",
+    "copilotSettings": "Copilot 设置",
+    "upToDate": "已是最新版本",
+    "newVersionAvailable": "新版本可用",
+    "updateCheckFailed": "更新检查失败",
+    "defaultChatModel": "默认聊天模型",
+    "selectChatModel": "选择要使用的聊天模型",
+    "selectModel": "选择模型",
+    "embeddingModel": "嵌入模型",
+    "embeddingModels": "嵌入模型列表",
+    "chatModels": "聊天模型列表",
+    "chatModel": "聊天模型",
+    "coreFeature": "核心功能：支持语义搜索和问答",
+    "embeddingDescription": "此模型将文本转换为向量表示，对于语义搜索和问答功能至关重要。更改嵌入模型将：",
+    "rebuildIndex": "需要重建您的知识库向量索引",
+    "affectSearch": "影响语义搜索质量",
+    "impactQA": "影响问答功能性能",
+    "defaultMode": "默认模式",
+    "selectDefaultMode": "选择默认聊天模式",
+    "chatModeDescription": {
+      "chat": "常规聊天模式，用于一般对话和任务。使用您自己的API密钥即可免费使用。",
+      "vaultQA": "使用语义搜索询问有关您的知识库内容的问题。使用您自己的API密钥即可免费使用。",
+      "copilotPlus": "涵盖所有免费模式功能，还包括聊天上下文菜单、高级搜索、AI代理等高级付费功能。查看obsidiancopilot.com了解更多详情。"
+    },
+    "openPluginIn": "插件打开位置",
+    "chooseOpenLocation": "选择在哪里打开插件",
+    "sidebarView": "侧边栏视图",
+    "editor": "编辑器",
+    "defaultConversationFolder": "默认对话文件夹名称",
+    "defaultConversationFolderDesc": "保存聊天对话的默认文件夹名称。默认为'copilot-conversations'",
+    "customPromptsFolder": "自定义提示文件夹名称",
+    "customPromptsFolderDesc": "保存自定义提示的默认文件夹名称。默认为'copilot-custom-prompts'",
+    "defaultConversationTag": "默认对话标签",
+    "defaultConversationTagDesc": "保存对话时使用的默认标签。默认为'ai-conversations'",
+    "conversationFilenameTemplate": "对话文件名模板",
+    "customizeFormat": "自定义保存的对话笔记名称格式。",
+    "templateNote": "注意：所有以下变量必须包含在模板中。",
+    "availableVariables": "可用变量：",
+    "dateVariable": "日期，格式为YYYYMMDD",
+    "timeVariable": "时间，格式为HHMMSS",
+    "topicVariable": "聊天对话主题",
+    "templateExample": "示例：{$date}_{$time}__{$topic} → 20250114_153232__polish_this_article_[[Readme]]",
+    "autosaveChat": "自动保存聊天",
+    "autosaveChatDesc": "在开始新聊天或插件重新加载时自动保存聊天",
+    "suggestedPrompts": "建议的提示",
+    "suggestedPromptsDesc": "在聊天视图中显示建议的提示",
+    "relevantNotes": "相关笔记",
+    "relevantNotesDesc": "在聊天视图中显示相关笔记",
+    "temperature": "温度",
+    "temperatureDescription": "默认值为0.1。较高的值会使生成更有创意，但也会出现更多错误。设为0以消除随机性。",
+    "tokenLimit": "标记限制",
+    "tokenLimitDescription1": "生成的最大输出标记数。默认为1000。",
+    "tokenLimitDescription2": "此数值加上您的提示长度（输入标记）必须小于模型的上下文窗口。",
+    "conversationTurns": "上下文中的对话轮次",
+    "conversationTurnsDescription": "在上下文中包含的先前对话轮次数。默认为15轮，即30条消息。"
+  },
+  "copilotPlus": {
+    "title": "Copilot Plus (测试版)",
+    "description": "Copilot Plus将您的Obsidian体验提升到新的水平，具有前沿的AI功能。这一高级版本解锁高级功能，包括聊天上下文、PDF和图像支持、网络搜索集成、独家聊天和嵌入模型等等。",
+    "betaNotice": "目前处于测试阶段，Copilot Plus正在快速发展，新功能和改进定期推出。立即加入以确保最低价格和提前访问！",
+    "enterLicense": "输入您的许可密钥",
+    "joinNow": "立即加入"
+  },
+  "modelSettings": {
+    "apiKeys": "API 密钥",
+    "openAI": "OpenAI",
+    "anthropic": "Anthropic",
+    "cohereAI": "CohereAI",
+    "googleAI": "Google AI",
+    "azureOpenAI": "Azure OpenAI",
+    "openRouter": "OpenRouter",
+    "groq": "Groq",
+    "mistralAI": "MistralAI",
+    "models": "模型",
+    "model": "模型",
+    "provider": "提供商",
+    "enabled": "启用",
+    "actions": "操作",
+    "addCustomModel": "添加自定义模型",
+    "capabilities": {
+      "title": "能力",
+      "reasoning": "此模型支持一般推理任务",
+      "vision": "此模型支持图像输入",
+      "websearch": "此模型可以访问互联网"
+    }
+  },
+  "qaSettings": {
+    "strategy": "策略",
+    "manage": "管理",
+    "autoIndexStrategy": {
+      "title": "自动索引策略",
+      "description": "决定何时为知识库建立索引。",
+      "tooltipHeading": "选择何时索引您的知识库：",
+      "never": {
+        "title": "从不",
+        "description": "仅通过命令或刷新手动索引"
+      },
+      "onStartup": {
+        "title": "启动时",
+        "description": "插件加载或重新加载时更新索引"
+      },
+      "onModeSwitch": {
+        "title": "切换模式时",
+        "description": "进入问答模式时更新（推荐）"
+      },
+      "warning": "警告：对于使用付费模型的大型知识库，可能会产生费用影响"
+    },
+    "maxSources": {
+      "title": "最大源数量",
+      "description": "Copilot搜索知识库以查找相关内容块，并将前N个块传递给LLM。N的默认值为3。如果希望在答案生成步骤中包含更多源，请增加此值。"
+    },
+    "requestsPerMinute": {
+      "title": "每分钟请求数",
+      "description": "默认为90。如果您受到嵌入提供商的速率限制，请减少此值。"
+    },
+    "embeddingBatchSize": {
+      "title": "嵌入批处理大小",
+      "description": "默认为16。如果您受到嵌入提供商的速率限制，请增加此值。"
+    },
+    "numPartitions": {
+      "title": "分区数量",
+      "description": "Copilot索引的分区数量。默认为1。如果您在索引大型知识库时遇到问题，请增加此值。警告：更改需要清除并重建索引！"
+    },
+    "exclusions": {
+      "title": "排除项",
+      "description": "从索引中排除文件夹、标签、笔记标题或文件扩展名。之前已索引的文件将保留，直到执行强制重新索引。",
+      "manageTitle": "管理排除项"
+    },
+    "inclusions": {
+      "title": "包含项",
+      "description": "仅索引指定的路径、标签或笔记标题。排除项优先于包含项。之前已索引的文件将保留，直到执行强制重新索引。",
+      "manageTitle": "管理包含项"
+    },
+    "enableIndexSync": {
+      "title": "启用Obsidian同步Copilot索引",
+      "description": "如果启用，索引将默认存储在.obsidian文件夹中并通过Obsidian同步功能同步。如果禁用，它将存储在知识库根目录的.copilot-index文件夹中。"
+    },
+    "disableIndexOnMobile": {
+      "title": "禁用移动设备上的索引加载",
+      "description": "启用后，Copilot索引将不会在移动设备上加载以节省资源。只有聊天模式可用。任何来自桌面同步的现有索引将被保留。取消选中以在移动设备上启用问答模式。"
+    }
+  },
+  "errors": {
+    "emptyIndexError": "Copilot 索引不存在。请先索引你的知识库！\n\n1. 在问答设置中设置一个可用的嵌入模型。如果不是本地模型，请确保设置API密钥。\n\n2. 点击'刷新知识库索引'并等待索引完成。如果遇到速率限制错误，请在问答设置中降低每秒请求数。"
+  }
+}

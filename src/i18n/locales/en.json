@@ -1,0 +1,202 @@
+{
+  "common": {
+    "loading": "Loading",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "send": "Send",
+    "reset": "Reset",
+    "search": "Search",
+    "upload": "Upload",
+    "download": "Download",
+    "copy": "Copy",
+    "paste": "Paste",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Info",
+    "apply": "Apply",
+    "continue": "Continue"
+  },
+  "chat": {
+    "newChat": "New Chat",
+    "clearChat": "Clear Chat",
+    "saveChat": "Save Chat",
+    "includeActiveNote": "Include Active Note",
+    "addContextNotes": "Add Context Notes",
+    "sendMessage": "Send Message",
+    "typeMessage": "Type a message...",
+    "copiedToClipboard": "Copied to clipboard",
+    "stop": "Stop",
+    "continue": "Continue",
+    "regenerate": "Regenerate",
+    "uploadImage": "Upload Image",
+    "loadingMessages": {
+      "default": "",
+      "readingFiles": "Reading files",
+      "searchingWeb": "Searching the web",
+      "readingFileTree": "Reading file tree"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "setKeys": "Set Keys",
+    "apiKeyRequired": "API key required for chat and QA features",
+    "apiKeyDescription": "To enable chat and QA functionality, please provide an API key from your selected provider.",
+    "tabs": {
+      "basic": "Basic",
+      "model": "Model",
+      "QA": "QA",
+      "command": "Command",
+      "advanced": "Advanced"
+    },
+    "resetSettings": "Reset Settings",
+    "resetSettingsConfirm": "Are you sure you want to reset all settings? This action cannot be undone.",
+    "copilotSettings": "Copilot Settings",
+    "upToDate": "up to date",
+    "newVersionAvailable": "A new version is available",
+    "updateCheckFailed": "update check failed",
+    "defaultChatModel": "Default Chat Model",
+    "selectChatModel": "Select the Chat model to use",
+    "selectModel": "Select Model",
+    "embeddingModel": "Embedding Model",
+    "embeddingModels": "Embedding Models",
+    "chatModels": "Chat Models",
+    "chatModel": "Chat Model",
+    "coreFeature": "Core Feature: Powers Semantic Search & QA",
+    "embeddingDescription": "This model converts text into vector representations, essential for semantic search and QA functionality. Changing the embedding model will:",
+    "rebuildIndex": "Require rebuilding your vault's vector index",
+    "affectSearch": "Affect semantic search quality",
+    "impactQA": "Impact QA feature performance",
+    "defaultMode": "Default Mode",
+    "selectDefaultMode": "Select the default chat mode",
+    "chatModeDescription": {
+      "chat": "Regular chat mode for general conversations and tasks. Free to use with your own API key.",
+      "vaultQA": "Ask questions about your vault content with semantic search. Free to use with your own API key.",
+      "copilotPlus": "Covers all features of the 2 free modes, plus advanced paid features including chat context menu, advanced search, AI agents, and more. Check out obsidiancopilot.com for more details."
+    },
+    "openPluginIn": "Open Plugin In",
+    "chooseOpenLocation": "Choose where to open the plugin",
+    "sidebarView": "Sidebar View",
+    "editor": "Editor",
+    "defaultConversationFolder": "Default Conversation Folder Name",
+    "defaultConversationFolderDesc": "The default folder name where chat conversations will be saved. Default is 'copilot-conversations'",
+    "customPromptsFolder": "Custom Prompts Folder Name",
+    "customPromptsFolderDesc": "The default folder name where custom prompts will be saved. Default is 'copilot-custom-prompts'",
+    "defaultConversationTag": "Default Conversation Tag",
+    "defaultConversationTagDesc": "The default tag to be used when saving a conversation. Default is 'ai-conversations'",
+    "conversationFilenameTemplate": "Conversation Filename Template",
+    "customizeFormat": "Customize the format of saved conversation note names.",
+    "templateNote": "Note: All the following variables must be included in the template.",
+    "availableVariables": "Available variables:",
+    "dateVariable": "Date in YYYYMMDD format",
+    "timeVariable": "Time in HHMMSS format",
+    "topicVariable": "Chat conversation topic",
+    "templateExample": "Example: {$date}_{$time}__{$topic} → 20250114_153232__polish_this_article_[[Readme]]",
+    "autosaveChat": "Autosave Chat",
+    "autosaveChatDesc": "Automatically save the chat when starting a new one or when the plugin reloads",
+    "suggestedPrompts": "Suggested Prompts",
+    "suggestedPromptsDesc": "Show suggested prompts in the chat view",
+    "relevantNotes": "Relevant Notes",
+    "relevantNotesDesc": "Show relevant notes in the chat view",
+    "temperature": "Temperature",
+    "temperatureDescription": "Default is 0.1. Higher values will result in more creativeness, but also more mistakes. Set to 0 for no randomness.",
+    "tokenLimit": "Token Limit",
+    "tokenLimitDescription1": "The maximum number of output tokens to generate. Default is 1000.",
+    "tokenLimitDescription2": "This number plus the length of your prompt (input tokens) must be smaller than the context window of the model.",
+    "conversationTurns": "Conversation Turns in Context",
+    "conversationTurnsDescription": "The number of previous conversation turns to include in the context. Default is 15 turns, i.e. 30 messages."
+  },
+  "copilotPlus": {
+    "title": "Copilot Plus (beta)",
+    "description": "Copilot Plus takes your Obsidian experience to the next level with cutting-edge AI capabilities. This premium tier unlocks advanced features, including chat context, PDF and image support, web search integration, exclusive chat and embedding models, and much more.",
+    "betaNotice": "Currently in beta, Copilot Plus is evolving fast, with new features and improvements rolling out regularly. Join now to secure the lowest price and get early access!",
+    "enterLicense": "Enter your license key",
+    "joinNow": "Join Now"
+  },
+  "modelSettings": {
+    "apiKeys": "API Keys",
+    "openAI": "OpenAI",
+    "anthropic": "Anthropic",
+    "cohereAI": "CohereAI",
+    "googleAI": "Google AI",
+    "azureOpenAI": "Azure OpenAI",
+    "openRouter": "OpenRouter",
+    "groq": "Groq",
+    "mistralAI": "MistralAI",
+    "models": "Models",
+    "model": "Model",
+    "provider": "Provider",
+    "enabled": "Enabled",
+    "actions": "Actions",
+    "addCustomModel": "Add Custom Model",
+    "capabilities": {
+      "title": "Capabilities",
+      "reasoning": "This model supports general reasoning tasks.",
+      "vision": "This model supports image inputs.",
+      "websearch": "This model can access the internet."
+    }
+  },
+  "qaSettings": {
+    "strategy": "Strategy",
+    "manage": "Manage",
+    "autoIndexStrategy": {
+      "title": "Auto-Index Strategy",
+      "description": "Decide when you want the vault to be indexed.",
+      "tooltipHeading": "Choose when to index your vault:",
+      "never": {
+        "title": "NEVER",
+        "description": "Manual indexing via command or refresh only"
+      },
+      "onStartup": {
+        "title": "ON STARTUP",
+        "description": "Index updates when plugin loads or reloads"
+      },
+      "onModeSwitch": {
+        "title": "ON MODE SWITCH",
+        "description": "Updates when entering QA mode (Recommended)"
+      },
+      "warning": "Warning: Cost implications for large vaults with paid models"
+    },
+    "maxSources": {
+      "title": "Max Sources",
+      "description": "Copilot goes through your vault to find relevant blocks and passes the top N blocks to the LLM. Default for N is 3. Increase if you want more sources included in the answer generation step."
+    },
+    "requestsPerMinute": {
+      "title": "Requests per Minute",
+      "description": "Default is 90. Decrease if you are rate limited by your embedding provider."
+    },
+    "embeddingBatchSize": {
+      "title": "Embedding Batch Size",
+      "description": "Default is 16. Increase if you are rate limited by your embedding provider."
+    },
+    "numPartitions": {
+      "title": "Number of Partitions",
+      "description": "Number of partitions for Copilot index. Default is 1. Increase if you have issues indexing large vaults. Warning: Changes require clearing and rebuilding the index!"
+    },
+    "exclusions": {
+      "title": "Exclusions",
+      "description": "Exclude folders, tags, note titles or file extensions from being indexed. Previously indexed files will remain until a force re-index is performed.",
+      "manageTitle": "Manage Exclusions"
+    },
+    "inclusions": {
+      "title": "Inclusions",
+      "description": "Index only the specified paths, tags, or note titles. Exclusions take precedence over inclusions. Previously indexed files will remain until a force re-index is performed.",
+      "manageTitle": "Manage Inclusions"
+    },
+    "enableIndexSync": {
+      "title": "Enable Obsidian Sync for Copilot index",
+      "description": "If enabled, the index will be stored in the .obsidian folder and synced with Obsidian Sync by default. If disabled, it will be stored in .copilot-index folder at vault root."
+    },
+    "disableIndexOnMobile": {
+      "title": "Disable index loading on mobile",
+      "description": "When enabled, Copilot index won't be loaded on mobile devices to save resources. Only chat mode will be available. Any existing index from desktop sync will be preserved. Uncheck to enable QA modes on mobile."
+    }
+  },
+  "errors": {
+    "emptyIndexError": "Copilot index does not exist. Please index your vault first!\n\n1. Set a working embedding model in QA settings. If it's not a local model, don't forget to set the API key. \n\n2. Click 'Refresh Index for Vault' and wait for indexing to complete. If you encounter the rate limiting error, please turn your request per second down in QA setting."
+  }
+}

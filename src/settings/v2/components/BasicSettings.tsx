@@ -3,8 +3,10 @@ import { RebuildIndexConfirmModal } from "@/components/modals/RebuildIndexConfir
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SettingItem } from "@/components/ui/setting-item";
-import { DEFAULT_OPEN_AREA, PLUS_UTM_MEDIUMS } from "@/constants";
+import { DEFAULT_OPEN_AREA } from "@/constants";
 import { useTab } from "@/contexts/TabContext";
+import { LanguageSelector } from "@/i18n";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 import { getModelKeyFromModel, updateSetting, useSettingsValue } from "@/settings/model";
 import { formatDateTime, checkModelApiKey } from "@/utils";
 import { HelpCircle, Key, Loader2 } from "lucide-react";
@@ -13,7 +15,6 @@ import React, { useState } from "react";
 import ApiKeyDialog from "./ApiKeyDialog";
 import { PlusSettings } from "@/settings/v2/components/PlusSettings";
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { createPlusPageUrl } from "@/plusUtils";
 import { getModelDisplayWithIcons } from "@/components/ui/model-display";
 import VectorStoreManager from "@/search/vectorStoreManager";
 
@@ -31,6 +32,7 @@ export const BasicSettings: React.FC = () => {
   const [conversationNoteName, setConversationNoteName] = useState(
     settings.defaultConversationNoteName || "{$date}_{$time}__{$topic}"
   );
+  const { t } = useTranslation();
 
   const handleSetDefaultEmbeddingModel = async (modelKey: string) => {
     if (modelKey !== settings.embeddingModelKey) {
@@ -104,18 +106,25 @@ export const BasicSettings: React.FC = () => {
 
       {/* General Section */}
       <section>
-        <div className="text-xl font-bold mb-3">General</div>
+        <div className="text-xl font-bold mb-3">{t("settings.title")}</div>
         <div className="space-y-4">
+          {/* Language Selector */}
+          <SettingItem
+            type="custom"
+            title={t("settings.language")}
+            description={t("settings.language")}
+          >
+            <LanguageSelector className="w-full sm:w-auto" />
+          </SettingItem>
+
           <div className="space-y-4">
             {/* API Key Section */}
             <SettingItem
               type="custom"
-              title="API Keys"
+              title={t("modelSettings.apiKeys")}
               description={
                 <div className="flex items-center gap-1.5">
-                  <span className="leading-none">
-                    Configure API keys for different AI providers
-                  </span>
+                  <span className="leading-none">{t("settings.apiKeyRequired")}</span>
                   <TooltipProvider delayDuration={0}>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -123,12 +132,9 @@ export const BasicSettings: React.FC = () => {
                       </TooltipTrigger>
                       <TooltipContent className="max-w-96 flex flex-col gap-2 py-4">
                         <div className="text-sm font-medium text-accent">
-                          API key required for chat and QA features
+                          {t("settings.apiKeyRequired")}
                         </div>
-                        <div className="text-xs text-muted">
-                          To enable chat and QA functionality, please provide an API key from your
-                          selected provider.
-                        </div>
+                        <div className="text-xs text-muted">{t("settings.apiKeyDescription")}</div>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -140,7 +146,7 @@ export const BasicSettings: React.FC = () => {
                 variant="secondary"
                 className="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-start"
               >
-                Set Keys
+                {t("settings.setKeys")}
                 <Key className="h-4 w-4" />
               </Button>
             </SettingItem>
@@ -156,9 +162,9 @@ export const BasicSettings: React.FC = () => {
           </div>
           <SettingItem
             type="select"
-            title="Default Chat Model"
-            description="Select the Chat model to use"
-            value={defaultModelActivated ? settings.defaultModelKey : "Select Model"}
+            title={t("settings.defaultChatModel")}
+            description={t("settings.selectChatModel")}
+            value={defaultModelActivated ? settings.defaultModelKey : t("settings.selectModel")}
             onChange={(value) => {
               const selectedModel = settings.activeModels.find(
                 (m) => m.enabled && getModelKeyFromModel(m) === value
@@ -175,19 +181,22 @@ export const BasicSettings: React.FC = () => {
             options={
               defaultModelActivated
                 ? enableActivatedModels
-                : [{ label: "Select Model", value: "Select Model" }, ...enableActivatedModels]
+                : [
+                    { label: t("settings.selectModel"), value: t("settings.selectModel") },
+                    ...enableActivatedModels,
+                  ]
             }
-            placeholder="Model"
+            placeholder={t("settings.selectModel")}
           />
 
           <SettingItem
             type="select"
-            title="Embedding Model"
+            title={t("settings.embeddingModel")}
             description={
               <div className="space-y-2">
                 <div className="flex items-center gap-1.5">
                   <span className="leading-none font-medium text-accent">
-                    Core Feature: Powers Semantic Search & QA
+                    {t("settings.coreFeature")}
                   </span>
                   <TooltipProvider delayDuration={0}>
                     <Tooltip>
@@ -196,13 +205,12 @@ export const BasicSettings: React.FC = () => {
                       </TooltipTrigger>
                       <TooltipContent className="max-w-96 flex flex-col gap-2">
                         <div className="text-sm text-muted pt-2">
-                          This model converts text into vector representations, essential for
-                          semantic search and QA functionality. Changing the embedding model will:
+                          {t("settings.embeddingDescription")}
                         </div>
                         <ul className="text-sm text-muted pl-4">
-                          <li>Require rebuilding your vault&#39;s vector index</li>
-                          <li>Affect semantic search quality</li>
-                          <li>Impact QA feature performance</li>
+                          <li>{t("settings.rebuildIndex")}</li>
+                          <li>{t("settings.affectSearch")}</li>
+                          <li>{t("settings.impactQA")}</li>
                         </ul>
                       </TooltipContent>
                     </Tooltip>
@@ -216,16 +224,16 @@ export const BasicSettings: React.FC = () => {
               label: getModelDisplayWithIcons(model),
               value: getModelKeyFromModel(model),
             }))}
-            placeholder="Model"
+            placeholder={t("settings.selectModel")}
           />
 
           {/* Basic Configuration Group */}
           <SettingItem
             type="select"
-            title="Default Mode"
+            title={t("settings.defaultMode")}
             description={
               <div className="flex items-center gap-1.5">
-                <span className="leading-none">Select the default chat mode</span>
+                <span className="leading-none">{t("settings.selectDefaultMode")}</span>
                 <TooltipProvider delayDuration={0}>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -234,26 +242,15 @@ export const BasicSettings: React.FC = () => {
                     <TooltipContent className="max-w-96 flex flex-col gap-2">
                       <ul className="text-sm text-muted pl-4">
                         <li>
-                          <strong>Chat:</strong> Regular chat mode for general conversations and
-                          tasks. <i>Free to use with your own API key.</i>
+                          <strong>Chat:</strong> {t("settings.chatModeDescription.chat")}
                         </li>
                         <li>
-                          <strong>Vault QA (Basic):</strong> Ask questions about your vault content
-                          with semantic search. <i>Free to use with your own API key.</i>
+                          <strong>Vault QA (Basic):</strong>{" "}
+                          {t("settings.chatModeDescription.vaultQA")}
                         </li>
                         <li>
-                          <strong>Copilot Plus:</strong> Covers all features of the 2 free modes,
-                          plus advanced paid features including chat context menu, advanced search,
-                          AI agents, and more. Check out{" "}
-                          <a
-                            href={createPlusPageUrl(PLUS_UTM_MEDIUMS.MODE_SELECT_TOOLTIP)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent hover:text-accent-hover"
-                          >
-                            obsidiancopilot.com
-                          </a>{" "}
-                          for more details.
+                          <strong>Copilot Plus:</strong>{" "}
+                          {t("settings.chatModeDescription.copilotPlus")}
                         </li>
                       </ul>
                     </TooltipContent>
@@ -271,20 +268,20 @@ export const BasicSettings: React.FC = () => {
 
           <SettingItem
             type="select"
-            title="Open Plugin In"
-            description="Choose where to open the plugin"
+            title={t("settings.openPluginIn")}
+            description={t("settings.chooseOpenLocation")}
             value={settings.defaultOpenArea}
             onChange={(value) => updateSetting("defaultOpenArea", value as DEFAULT_OPEN_AREA)}
             options={[
-              { label: "Sidebar View", value: DEFAULT_OPEN_AREA.VIEW },
-              { label: "Editor", value: DEFAULT_OPEN_AREA.EDITOR },
+              { label: t("settings.sidebarView"), value: DEFAULT_OPEN_AREA.VIEW },
+              { label: t("settings.editor"), value: DEFAULT_OPEN_AREA.EDITOR },
             ]}
           />
 
           <SettingItem
             type="text"
-            title="Default Conversation Folder Name"
-            description="The default folder name where chat conversations will be saved. Default is 'copilot-conversations'"
+            title={t("settings.defaultConversationFolder")}
+            description={t("settings.defaultConversationFolderDesc")}
             value={settings.defaultSaveFolder}
             onChange={(value) => updateSetting("defaultSaveFolder", value)}
             placeholder="copilot-conversations"
@@ -292,8 +289,8 @@ export const BasicSettings: React.FC = () => {
 
           <SettingItem
             type="text"
-            title="Custom Prompts Folder Name"
-            description="The default folder name where custom prompts will be saved. Default is 'copilot-custom-prompts'"
+            title={t("settings.customPromptsFolder")}
+            description={t("settings.customPromptsFolderDesc")}
             value={settings.customPromptsFolder}
             onChange={(value) => updateSetting("customPromptsFolder", value)}
             placeholder="copilot-custom-prompts"
@@ -301,8 +298,8 @@ export const BasicSettings: React.FC = () => {
 
           <SettingItem
             type="text"
-            title="Default Conversation Tag"
-            description="The default tag to be used when saving a conversation. Default is 'ai-conversations'"
+            title={t("settings.defaultConversationTag")}
+            description={t("settings.defaultConversationTagDesc")}
             value={settings.defaultConversationTag}
             onChange={(value) => updateSetting("defaultConversationTag", value)}
             placeholder="ai-conversations"
@@ -310,12 +307,10 @@ export const BasicSettings: React.FC = () => {
 
           <SettingItem
             type="custom"
-            title="Conversation Filename Template"
+            title={t("settings.conversationFilenameTemplate")}
             description={
               <div className="flex items-start gap-1.5 ">
-                <span className="leading-none">
-                  Customize the format of saved conversation note names.
-                </span>
+                <span className="leading-none">{t("settings.customizeFormat")}</span>
                 <TooltipProvider delayDuration={0}>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -323,25 +318,24 @@ export const BasicSettings: React.FC = () => {
                     </TooltipTrigger>
                     <TooltipContent className="max-w-96 flex flex-col gap-2 py-4">
                       <div className="text-sm font-medium text-accent">
-                        Note: All the following variables must be included in the template.
+                        {t("settings.templateNote")}
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-muted">Available variables:</div>
+                        <div className="text-sm font-medium text-muted">
+                          {t("settings.availableVariables")}
+                        </div>
                         <ul className="text-sm text-muted pl-4">
                           <li>
-                            <strong>{"{$date}"}</strong>: Date in YYYYMMDD format
+                            <strong>{"{$date}"}</strong>: {t("settings.dateVariable")}
                           </li>
                           <li>
-                            <strong>{"{$time}"}</strong>: Time in HHMMSS format
+                            <strong>{"{$time}"}</strong>: {t("settings.timeVariable")}
                           </li>
                           <li>
-                            <strong>{"{$topic}"}</strong>: Chat conversation topic
+                            <strong>{"{$topic}"}</strong>: {t("settings.topicVariable")}
                           </li>
                         </ul>
-                        <i className="text-sm text-muted mt-2">
-                          Example: {"{$date}_{$time}__{$topic}"} →
-                          20250114_153232__polish_this_article_[[Readme]]
-                        </i>
+                        <i className="text-sm text-muted mt-2">{t("settings.templateExample")}</i>
                       </div>
                     </TooltipContent>
                   </Tooltip>
@@ -367,10 +361,10 @@ export const BasicSettings: React.FC = () => {
                 {isChecking ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Apply
+                    {t("common.apply")}
                   </>
                 ) : (
-                  "Apply"
+                  t("common.apply")
                 )}
               </Button>
             </div>
@@ -379,24 +373,24 @@ export const BasicSettings: React.FC = () => {
           {/* Feature Toggle Group */}
           <SettingItem
             type="switch"
-            title="Autosave Chat"
-            description="Automatically save the chat when starting a new one or when the plugin reloads"
+            title={t("settings.autosaveChat")}
+            description={t("settings.autosaveChatDesc")}
             checked={settings.autosaveChat}
             onCheckedChange={(checked) => updateSetting("autosaveChat", checked)}
           />
 
           <SettingItem
             type="switch"
-            title="Suggested Prompts"
-            description="Show suggested prompts in the chat view"
+            title={t("settings.suggestedPrompts")}
+            description={t("settings.suggestedPromptsDesc")}
             checked={settings.showSuggestedPrompts}
             onCheckedChange={(checked) => updateSetting("showSuggestedPrompts", checked)}
           />
 
           <SettingItem
             type="switch"
-            title="Relevant Notes"
-            description="Show relevant notes in the chat view"
+            title={t("settings.relevantNotes")}
+            description={t("settings.relevantNotesDesc")}
             checked={settings.showRelevantNotes}
             onCheckedChange={(checked) => updateSetting("showRelevantNotes", checked)}
           />

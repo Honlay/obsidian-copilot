@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import { PLUS_UTM_MEDIUMS } from "@/constants";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 import { checkIsPlusUser, navigateToPlusPage, useIsPlusUser } from "@/plusUtils";
 import { updateSetting, useSettingsValue } from "@/settings/model";
 import { ExternalLink, Loader2 } from "lucide-react";
@@ -14,6 +15,7 @@ export function PlusSettings() {
   const [isChecking, setIsChecking] = useState(false);
   const isPlusUser = useIsPlusUser();
   const [localLicenseKey, setLocalLicenseKey] = useState(settings.plusLicenseKey);
+  const { t } = useTranslation();
   useEffect(() => {
     setLocalLicenseKey(settings.plusLicenseKey);
   }, [settings.plusLicenseKey]);
@@ -21,7 +23,7 @@ export function PlusSettings() {
   return (
     <section className="flex flex-col gap-4 bg-secondary p-4 rounded-lg">
       <div className="text-xl font-bold flex items-center gap-2 justify-between">
-        <span>Copilot Plus (beta)</span>
+        <span>{t("copilotPlus.title")}</span>
         {isPlusUser && (
           <Badge variant="outline" className="text-success">
             Active
@@ -29,20 +31,13 @@ export function PlusSettings() {
         )}
       </div>
       <div className="text-sm text-muted flex flex-col gap-2">
-        <div>
-          Copilot Plus takes your Obsidian experience to the next level with cutting-edge AI
-          capabilities. This premium tier unlocks advanced features, including chat context, PDF and
-          image support, web search integration, exclusive chat and embedding models, and much more.
-        </div>
-        <div>
-          Currently in beta, Copilot Plus is evolving fast, with new features and improvements
-          rolling out regularly. Join now to secure the lowest price and get early access!
-        </div>
+        <div>{t("copilotPlus.description")}</div>
+        <div>{t("copilotPlus.betaNotice")}</div>
       </div>
       <div className="flex items-center gap-2">
         <PasswordInput
           className="w-full"
-          placeholder="Enter your license key"
+          placeholder={t("copilotPlus.enterLicense")}
           value={localLicenseKey}
           onChange={(value) => {
             setLocalLicenseKey(value);
@@ -64,10 +59,10 @@ export function PlusSettings() {
           }}
           className="min-w-20"
         >
-          {isChecking ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply"}
+          {isChecking ? <Loader2 className="h-4 w-4 animate-spin" /> : t("common.apply")}
         </Button>
         <Button variant="secondary" onClick={() => navigateToPlusPage(PLUS_UTM_MEDIUMS.SETTINGS)}>
-          Join Now <ExternalLink className="size-4" />
+          {t("copilotPlus.joinNow")} <ExternalLink className="size-4" />
         </Button>
       </div>
       <div className="text-error">{error}</div>

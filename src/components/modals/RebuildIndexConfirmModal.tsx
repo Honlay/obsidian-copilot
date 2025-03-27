@@ -1,13 +1,13 @@
-import { App } from "obsidian";
 import { ConfirmModal } from "./ConfirmModal";
+import { App } from "obsidian";
 
 export class RebuildIndexConfirmModal extends ConfirmModal {
   constructor(app: App, onConfirm: () => void) {
     super(
       app,
       onConfirm,
-      "Changing this setting means you have to rebuild the index for your entire vault, do you wish to proceed?",
-      "Rebuild Index"
+      "Rebuild Index",
+      "Changing the embedding model requires rebuilding the entire vector index. This may take some time. Are you sure you want to continue?"
     );
   }
 }

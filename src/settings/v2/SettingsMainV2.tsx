@@ -2,6 +2,8 @@ import { ResetSettingsConfirmModal } from "@/components/modals/ResetSettingsConf
 import { Button } from "@/components/ui/button";
 import { TabContent, TabItem, type TabItem as TabItemType } from "@/components/ui/setting-tabs";
 import { TabProvider, useTab } from "@/contexts/TabContext";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
+import { LOCALE_CHANGE_EVENT } from "@/i18n/components/LanguageSelector";
 import CopilotPlugin from "@/main";
 import { resetSettings } from "@/settings/model";
 import { CommandSettings } from "@/settings/v2/components/CommandSettings";
@@ -34,27 +36,31 @@ const components: Record<TabId, React.FC> = {
   advanced: () => <AdvancedSettings />,
 };
 
-// tabs
-const tabs: TabItemType[] = TAB_IDS.map((id) => ({
-  id,
-  icon: icons[id],
-  label: id.charAt(0).toUpperCase() + id.slice(1),
-}));
-
-const SettingsContent: React.FC<{ plugin: CopilotPlugin }> = ({ plugin }) => {
+const SettingsContent: React.FC<{ plugin: CopilotPlugin; forceRenderKey: number }> = ({
+  plugin,
+  forceRenderKey,
+}) => {
   const { selectedTab, setSelectedTab } = useTab();
+  const { t } = useTranslation();
+
+  // 更新tabs数据以使用翻译
+  const translatedTabs: TabItemType[] = TAB_IDS.map((id) => ({
+    id,
+    icon: icons[id],
+    label: t(`settings.tabs.${id}`),
+  }));
 
   return (
     <div className="flex flex-col">
       <div className="inline-flex rounded-lg">
-        {tabs.map((tab, index) => (
+        {translatedTabs.map((tab, index) => (
           <TabItem
-            key={tab.id}
+            key={`${tab.id}-${forceRenderKey}`}
             tab={tab}
             isSelected={selectedTab === tab.id}
             onClick={() => setSelectedTab(tab.id)}
             isFirst={index === 0}
-            isLast={index === tabs.length - 1}
+            isLast={index === translatedTabs.length - 1}
           />
         ))}
       </div>
@@ -64,7 +70,7 @@ const SettingsContent: React.FC<{ plugin: CopilotPlugin }> = ({ plugin }) => {
         {TAB_IDS.map((id) => {
           const Component = components[id];
           return (
-            <TabContent key={id} id={id} isSelected={selectedTab === id}>
+            <TabContent key={`${id}-${forceRenderKey}`} id={id} isSelected={selectedTab === id}>
               <Component />
             </TabContent>
           );
@@ -79,10 +85,25 @@ interface SettingsMainV2Props {
 }
 
 const SettingsMainV2: React.FC<SettingsMainV2Props> = ({ plugin }) => {
-  // Add a key state that we'll change when resetting
+  // Add a key state that we'll change when resetting or changing language
   const [resetKey, setResetKey] = React.useState(0);
   const [latestVersion, setLatestVersion] = useState<string | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
+  const { t } = useTranslation();
+
+  // 添加对语言变化事件的监听
+  useEffect(() => {
+    const handleLocaleChange = () => {
+      // 强制重新渲染整个设置界面
+      setResetKey((prev) => prev + 1);
+    };
+
+    window.addEventListener(LOCALE_CHANGE_EVENT as any, handleLocaleChange);
+
+    return () => {
+      window.removeEventListener(LOCALE_CHANGE_EVENT as any, handleLocaleChange);
+    };
+  }, []);
 
   useEffect(() => {
     // Check version when settings tab is opened
@@ -114,11 +135,11 @@ const SettingsMainV2: React.FC<SettingsMainV2Props> = ({ plugin }) => {
 
   return (
     <TabProvider>
-      <div>
+      <div key={`settings-main-${resetKey}`}>
         <div className="flex flex-col gap-2">
           <h1 className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span>Copilot Settings</span>
+              <span>{t("settings.copilotSettings")}</span>
               <span className="text-xs text-muted">
                 <a
                   href="https://github.com/logancyang/obsidian-copilot/releases/"
@@ -131,18 +152,18 @@ const SettingsMainV2: React.FC<SettingsMainV2Props> = ({ plugin }) => {
                 {updateError ? (
                   <span className="text-error" title={updateError}>
                     {" "}
-                    (update check failed)
+                    ({t("settings.updateCheckFailed")})
                   </span>
                 ) : (
                   latestVersion && (
                     <>
                       {isNewerVersionAvailable ? (
-                        <span className="text-accent" title="A new version is available">
+                        <span className="text-accent" title={t("settings.newVersionAvailable")}>
                           {" "}
                           (latest: v{latestVersion})
                         </span>
                       ) : (
-                        <span className="text-accent"> (up to date)</span>
+                        <span className="text-accent"> ({t("settings.upToDate")})</span>
                       )}
                     </>
                   )
@@ -151,13 +172,13 @@ const SettingsMainV2: React.FC<SettingsMainV2Props> = ({ plugin }) => {
             </div>
             <div className="self-end sm:self-auto">
               <Button variant="secondary" size="sm" onClick={handleReset}>
-                Reset Settings
+                {t("settings.resetSettings")}
               </Button>
             </div>
           </h1>
         </div>
         {/* Add the key prop to force re-render */}
-        <SettingsContent key={resetKey} plugin={plugin} />
+        <SettingsContent key={resetKey} forceRenderKey={resetKey} plugin={plugin} />
       </div>
     </TabProvider>
   );

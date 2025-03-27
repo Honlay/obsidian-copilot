@@ -1,5 +1,6 @@
 import CopilotView from "@/components/CopilotView";
 import { CHAT_VIEWTYPE } from "@/constants";
+import { I18nProvider } from "@/i18n";
 import CopilotPlugin from "@/main";
 import { getSettings } from "@/settings/model";
 import { App, Notice, PluginSettingTab } from "obsidian";
@@ -47,7 +48,9 @@ export class CopilotSettingTab extends PluginSettingTab {
 
     sections.render(
       <ContainerContext.Provider value={containerEl}>
-        <SettingsMainV2 plugin={this.plugin} />
+        <I18nProvider>
+          <SettingsMainV2 plugin={this.plugin} />
+        </I18nProvider>
       </ContainerContext.Provider>
     );
   }

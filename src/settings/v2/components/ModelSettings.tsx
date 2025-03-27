@@ -7,12 +7,14 @@ import EmbeddingManager from "@/LLMProviders/embeddingManager";
 import { ModelAddDialog } from "@/settings/v2/components/ModelAddDialog";
 import { ModelTable } from "@/settings/v2/components/ModelTable";
 import { ModelEditDialog } from "@/settings/v2/components/ModelEditDialog";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 
 export const ModelSettings: React.FC = () => {
   const settings = useSettingsValue();
   const [editingModel, setEditingModel] = useState<CustomModel | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showAddEmbeddingDialog, setShowAddEmbeddingDialog] = useState(false);
+  const { t } = useTranslation();
 
   const onDeleteModel = (modelKey: string) => {
     const [modelName, provider] = modelKey.split("|");
@@ -67,7 +69,7 @@ export const ModelSettings: React.FC = () => {
   return (
     <div className="space-y-4">
       <section>
-        <div className="text-xl font-bold mb-3">Chat Models</div>
+        <div className="text-xl font-bold mb-3">{t("settings.chatModels")}</div>
         <ModelTable
           models={settings.activeModels}
           onEdit={setEditingModel}
@@ -75,7 +77,7 @@ export const ModelSettings: React.FC = () => {
           onAdd={() => setShowAddDialog(true)}
           onUpdateModel={handleModelUpdate}
           onReorderModels={handleModelReorder}
-          title="Chat Model"
+          title={t("settings.chatModel")}
         />
 
         {/* model edit dialog*/}
@@ -100,8 +102,8 @@ export const ModelSettings: React.FC = () => {
         <div className="space-y-4">
           <SettingItem
             type="slider"
-            title="Temperature"
-            description="Default is 0.1. Higher values will result in more creativeness, but also more mistakes. Set to 0 for no randomness."
+            title={t("settings.temperature")}
+            description={t("settings.temperatureDescription")}
             value={settings.temperature}
             onChange={(value) => updateSetting("temperature", value)}
             min={0}
@@ -111,16 +113,11 @@ export const ModelSettings: React.FC = () => {
 
           <SettingItem
             type="slider"
-            title="Token limit"
+            title={t("settings.tokenLimit")}
             description={
               <>
-                <p>
-                  The maximum number of <em>output tokens</em> to generate. Default is 1000.
-                </p>
-                <em>
-                  This number plus the length of your prompt (input tokens) must be smaller than the
-                  context window of the model.
-                </em>
+                <p>{t("settings.tokenLimitDescription1")}</p>
+                <em>{t("settings.tokenLimitDescription2")}</em>
               </>
             }
             value={settings.maxTokens}
@@ -132,8 +129,8 @@ export const ModelSettings: React.FC = () => {
 
           <SettingItem
             type="slider"
-            title="Conversation turns in context"
-            description="The number of previous conversation turns to include in the context. Default is 15 turns, i.e. 30 messages."
+            title={t("settings.conversationTurns")}
+            description={t("settings.conversationTurnsDescription")}
             value={settings.contextTurns}
             onChange={(value) => updateSetting("contextTurns", value)}
             min={1}
@@ -144,14 +141,14 @@ export const ModelSettings: React.FC = () => {
       </section>
 
       <section>
-        <div className="text-xl font-bold mb-3">Embedding Models</div>
+        <div className="text-xl font-bold mb-3">{t("settings.embeddingModels")}</div>
         <ModelTable
           models={settings.activeEmbeddingModels}
           onDelete={onDeleteEmbeddingModel}
           onAdd={() => setShowAddEmbeddingDialog(true)}
           onUpdateModel={handleEmbeddingModelUpdate}
           onReorderModels={handleEmbeddingModelReorder}
-          title="Embedding Model"
+          title={t("settings.embeddingModel")}
         />
 
         {/* Embedding model add dialog */}

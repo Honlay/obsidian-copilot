@@ -2,6 +2,7 @@ import ChainManager from "@/LLMProviders/chainManager";
 import Chat from "@/components/Chat";
 import { CHAT_VIEWTYPE } from "@/constants";
 import { AppContext, EventTargetContext } from "@/context";
+import { I18nProvider } from "@/i18n";
 import CopilotPlugin from "@/main";
 import SharedState from "@/sharedState";
 import { FileParserManager } from "@/tools/FileParserManager";
@@ -60,18 +61,20 @@ export default class CopilotView extends ItemView {
     root.render(
       <AppContext.Provider value={this.app}>
         <EventTargetContext.Provider value={this.eventTarget}>
-          <React.StrictMode>
-            <Tooltip.Provider delayDuration={0}>
-              <Chat
-                sharedState={this.sharedState}
-                chainManager={this.chainManager}
-                updateUserMessageHistory={updateUserMessageHistory}
-                fileParserManager={this.fileParserManager}
-                plugin={this.plugin}
-                onSaveChat={handleSaveAsNote}
-              />
-            </Tooltip.Provider>
-          </React.StrictMode>
+          <I18nProvider>
+            <React.StrictMode>
+              <Tooltip.Provider delayDuration={0}>
+                <Chat
+                  sharedState={this.sharedState}
+                  chainManager={this.chainManager}
+                  updateUserMessageHistory={updateUserMessageHistory}
+                  fileParserManager={this.fileParserManager}
+                  plugin={this.plugin}
+                  onSaveChat={handleSaveAsNote}
+                />
+              </Tooltip.Provider>
+            </React.StrictMode>
+          </I18nProvider>
         </EventTargetContext.Provider>
       </AppContext.Provider>
     );
