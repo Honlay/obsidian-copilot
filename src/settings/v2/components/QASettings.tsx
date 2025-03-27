@@ -3,16 +3,39 @@ import { RebuildIndexConfirmModal } from "@/components/modals/RebuildIndexConfir
 import { Button } from "@/components/ui/button";
 import { SettingItem } from "@/components/ui/setting-item";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { VAULT_VECTOR_STORE_STRATEGIES, getTranslatedVaultVectorStoreStrategy } from "@/constants";
-import { useTranslation } from "@/i18n/hooks/useTranslation";
+import { VAULT_VECTOR_STORE_STRATEGIES, VAULT_VECTOR_STORE_STRATEGY } from "@/constants";
 import VectorStoreManager from "@/search/vectorStoreManager";
 import { updateSetting, useSettingsValue } from "@/settings/model";
 import { HelpCircle } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
+import LocaleService from "@/i18n/LocaleService";
+
+const localeService = LocaleService.getInstance();
+
+const getTranslatedStrategy = (strategy: VAULT_VECTOR_STORE_STRATEGY): string => {
+  const translations: Record<VAULT_VECTOR_STORE_STRATEGY, string> = {
+    [VAULT_VECTOR_STORE_STRATEGY.NEVER]: localeService.getTranslation("vectorStoreStrategy.never"),
+    [VAULT_VECTOR_STORE_STRATEGY.ON_STARTUP]: localeService.getTranslation(
+      "vectorStoreStrategy.onStartup"
+    ),
+    [VAULT_VECTOR_STORE_STRATEGY.ON_MODE_SWITCH]: localeService.getTranslation(
+      "vectorStoreStrategy.onModeSwitch"
+    ),
+  };
+  return translations[strategy] || strategy;
+};
 
 export const QASettings: React.FC = () => {
   const settings = useSettingsValue();
-  const { t } = useTranslation();
+
+  const strategyOptions = useMemo(
+    () =>
+      VAULT_VECTOR_STORE_STRATEGIES.map((strategy) => ({
+        label: getTranslatedStrategy(strategy),
+        value: strategy,
+      })),
+    []
+  );
 
   const handlePartitionsChange = (value: string) => {
     const numValue = parseInt(value);
@@ -31,11 +54,11 @@ export const QASettings: React.FC = () => {
           {/* Auto-Index Strategy */}
           <SettingItem
             type="select"
-            title={t("qaSettings.autoIndexStrategy.title")}
+            title={localeService.getTranslation("qaSettings.autoIndexStrategy.title")}
             description={
               <div className="flex items-center gap-1.5">
                 <span className="leading-none">
-                  {t("qaSettings.autoIndexStrategy.description")}
+                  {localeService.getTranslation("qaSettings.autoIndexStrategy.description")}
                 </span>
                 <TooltipProvider delayDuration={0}>
                   <Tooltip>
@@ -46,41 +69,60 @@ export const QASettings: React.FC = () => {
                       <div className="space-y-2 py-2">
                         <div className="space-y-1">
                           <div className="text-muted text-sm">
-                            {t("qaSettings.autoIndexStrategy.tooltipHeading")}
+                            {localeService.getTranslation(
+                              "qaSettings.autoIndexStrategy.tooltipHeading"
+                            )}
                           </div>
                           <ul className="space-y-1 pl-2 list-disc text-sm">
                             <li>
                               <div className="flex items-center gap-1">
                                 <strong className="inline-block whitespace-nowrap">
-                                  {t("qaSettings.autoIndexStrategy.never.title")}:
-                                </strong>
-                                <span>{t("qaSettings.autoIndexStrategy.never.description")}</span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="flex items-center gap-1">
-                                <strong className="inline-block whitespace-nowrap">
-                                  {t("qaSettings.autoIndexStrategy.onStartup.title")}:
+                                  {localeService.getTranslation(
+                                    "qaSettings.autoIndexStrategy.never.title"
+                                  )}
+                                  :
                                 </strong>
                                 <span>
-                                  {t("qaSettings.autoIndexStrategy.onStartup.description")}
+                                  {localeService.getTranslation(
+                                    "qaSettings.autoIndexStrategy.never.description"
+                                  )}
                                 </span>
                               </div>
                             </li>
                             <li>
                               <div className="flex items-center gap-1">
                                 <strong className="inline-block whitespace-nowrap">
-                                  {t("qaSettings.autoIndexStrategy.onModeSwitch.title")}:
+                                  {localeService.getTranslation(
+                                    "qaSettings.autoIndexStrategy.onStartup.title"
+                                  )}
+                                  :
                                 </strong>
                                 <span>
-                                  {t("qaSettings.autoIndexStrategy.onModeSwitch.description")}
+                                  {localeService.getTranslation(
+                                    "qaSettings.autoIndexStrategy.onStartup.description"
+                                  )}
+                                </span>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="flex items-center gap-1">
+                                <strong className="inline-block whitespace-nowrap">
+                                  {localeService.getTranslation(
+                                    "qaSettings.autoIndexStrategy.onModeSwitch.title"
+                                  )}
+                                  :
+                                </strong>
+                                <span>
+                                  {localeService.getTranslation(
+                                    "qaSettings.autoIndexStrategy.onModeSwitch.description"
+                                  )}
                                 </span>
                               </div>
                             </li>
                           </ul>
                         </div>
                         <p className="text-callout-warning text-sm">
-                          {t("qaSettings.autoIndexStrategy.warning")}
+                          {localeService.getTranslation("qaSettings.autoIndexStrategy.warning")}
                         </p>
                       </div>
                     </TooltipContent>
@@ -92,18 +134,15 @@ export const QASettings: React.FC = () => {
             onChange={(value) => {
               updateSetting("indexVaultToVectorStore", value);
             }}
-            options={VAULT_VECTOR_STORE_STRATEGIES.map((strategy) => ({
-              label: getTranslatedVaultVectorStoreStrategy(strategy),
-              value: strategy,
-            }))}
-            placeholder={t("qaSettings.strategy")}
+            options={strategyOptions}
+            placeholder={localeService.getTranslation("qaSettings.strategy")}
           />
 
           {/* Max Sources */}
           <SettingItem
             type="slider"
-            title={t("qaSettings.maxSources.title")}
-            description={t("qaSettings.maxSources.description")}
+            title={localeService.getTranslation("qaSettings.maxSources.title")}
+            description={localeService.getTranslation("qaSettings.maxSources.description")}
             min={1}
             max={128}
             step={1}
@@ -114,8 +153,8 @@ export const QASettings: React.FC = () => {
           {/* Requests per Minute */}
           <SettingItem
             type="slider"
-            title={t("qaSettings.requestsPerMinute.title")}
-            description={t("qaSettings.requestsPerMinute.description")}
+            title={localeService.getTranslation("qaSettings.requestsPerMinute.title")}
+            description={localeService.getTranslation("qaSettings.requestsPerMinute.description")}
             min={10}
             max={300}
             step={10}
@@ -126,8 +165,8 @@ export const QASettings: React.FC = () => {
           {/* Embedding batch size */}
           <SettingItem
             type="slider"
-            title={t("qaSettings.embeddingBatchSize.title")}
-            description={t("qaSettings.embeddingBatchSize.description")}
+            title={localeService.getTranslation("qaSettings.embeddingBatchSize.title")}
+            description={localeService.getTranslation("qaSettings.embeddingBatchSize.description")}
             min={1}
             max={128}
             step={1}
@@ -138,8 +177,8 @@ export const QASettings: React.FC = () => {
           {/* Number of Partitions */}
           <SettingItem
             type="select"
-            title={t("qaSettings.numPartitions.title")}
-            description={t("qaSettings.numPartitions.description")}
+            title={localeService.getTranslation("qaSettings.numPartitions.title")}
+            description={localeService.getTranslation("qaSettings.numPartitions.description")}
             value={settings.numPartitions.toString()}
             onChange={handlePartitionsChange}
             options={[
@@ -168,10 +207,10 @@ export const QASettings: React.FC = () => {
           {/* Exclusions */}
           <SettingItem
             type="custom"
-            title={t("qaSettings.exclusions.title")}
+            title={localeService.getTranslation("qaSettings.exclusions.title")}
             description={
               <>
-                <p>{t("qaSettings.exclusions.description")}</p>
+                <p>{localeService.getTranslation("qaSettings.exclusions.description")}</p>
               </>
             }
           >
@@ -182,19 +221,19 @@ export const QASettings: React.FC = () => {
                   app,
                   (value) => updateSetting("qaExclusions", value),
                   settings.qaExclusions,
-                  t("qaSettings.exclusions.manageTitle")
+                  localeService.getTranslation("qaSettings.exclusions.manageTitle")
                 ).open()
               }
             >
-              {t("qaSettings.manage")}
+              {localeService.getTranslation("qaSettings.manage")}
             </Button>
           </SettingItem>
 
           {/* Inclusions */}
           <SettingItem
             type="custom"
-            title={t("qaSettings.inclusions.title")}
-            description={<p>{t("qaSettings.inclusions.description")}</p>}
+            title={localeService.getTranslation("qaSettings.inclusions.title")}
+            description={<p>{localeService.getTranslation("qaSettings.inclusions.description")}</p>}
           >
             <Button
               variant="secondary"
@@ -203,19 +242,19 @@ export const QASettings: React.FC = () => {
                   app,
                   (value) => updateSetting("qaInclusions", value),
                   settings.qaInclusions,
-                  t("qaSettings.inclusions.manageTitle")
+                  localeService.getTranslation("qaSettings.inclusions.manageTitle")
                 ).open()
               }
             >
-              {t("qaSettings.manage")}
+              {localeService.getTranslation("qaSettings.manage")}
             </Button>
           </SettingItem>
 
           {/* Enable Obsidian Sync */}
           <SettingItem
             type="switch"
-            title={t("qaSettings.enableIndexSync.title")}
-            description={t("qaSettings.enableIndexSync.description")}
+            title={localeService.getTranslation("qaSettings.enableIndexSync.title")}
+            description={localeService.getTranslation("qaSettings.enableIndexSync.description")}
             checked={settings.enableIndexSync}
             onCheckedChange={(checked) => updateSetting("enableIndexSync", checked)}
           />
@@ -223,8 +262,10 @@ export const QASettings: React.FC = () => {
           {/* Disable index loading on mobile */}
           <SettingItem
             type="switch"
-            title={t("qaSettings.disableIndexOnMobile.title")}
-            description={t("qaSettings.disableIndexOnMobile.description")}
+            title={localeService.getTranslation("qaSettings.disableIndexOnMobile.title")}
+            description={localeService.getTranslation(
+              "qaSettings.disableIndexOnMobile.description"
+            )}
             checked={settings.disableIndexOnMobile}
             onCheckedChange={(checked) => updateSetting("disableIndexOnMobile", checked)}
           />

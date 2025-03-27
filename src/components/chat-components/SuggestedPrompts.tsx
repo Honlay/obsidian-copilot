@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardTitle, CardContent, CardHeader } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { VAULT_VECTOR_STORE_STRATEGY } from "@/constants";
-import { useTranslation } from "@/i18n/hooks/useTranslation";
+import LocaleService from "@/i18n/LocaleService";
 import { useSettingsValue } from "@/settings/model";
 import { PlusCircle, TriangleAlert } from "lucide-react";
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
+import { LOCALE_CHANGE_EVENT } from "@/i18n/components/LanguageSelector";
+import { Locale, DEFAULT_LOCALE } from "@/i18n/config";
 
 export type PromptCategory = {
   titleKey: string;
@@ -75,7 +77,9 @@ const PROMPT_KEYS: Record<ChainType, Array<keyof ReturnType<typeof getSuggestedP
   [ChainType.COPILOT_PLUS_CHAIN]: ["copilotPlus", "copilotPlus", "copilotPlus"],
 };
 
-function getRandomPrompt(chainType: ChainType = ChainType.LLM_CHAIN, t: (key: string) => string) {
+const localeService = LocaleService.getInstance();
+
+function getRandomPrompt(chainType: ChainType = ChainType.LLM_CHAIN) {
   const SUGGESTED_PROMPTS = getSuggestedPrompts();
   const keys = PROMPT_KEYS[chainType] || PROMPT_KEYS[ChainType.LLM_CHAIN];
 
@@ -86,9 +90,11 @@ function getRandomPrompt(chainType: ChainType = ChainType.LLM_CHAIN, t: (key: st
     if (!shuffledPrompts[key]) {
       shuffledPrompts[key] = [...SUGGESTED_PROMPTS[key].prompts].sort(() => Math.random() - 0.5);
     }
+
+    const promptKey = shuffledPrompts[key].pop() || SUGGESTED_PROMPTS[key].prompts[0];
     return {
-      title: t(SUGGESTED_PROMPTS[key].titleKey),
-      text: shuffledPrompts[key].pop() || SUGGESTED_PROMPTS[key].prompts[0],
+      titleKey: SUGGESTED_PROMPTS[key].titleKey,
+      textKey: promptKey,
     };
   });
 }
@@ -98,17 +104,73 @@ interface SuggestedPromptsProps {
 }
 
 export const SuggestedPrompts: React.FC<SuggestedPromptsProps> = ({ onClick }) => {
-  const { t } = useTranslation();
   const [chainType] = useChainType();
-  const prompts = useMemo(() => getRandomPrompt(chainType, t), [chainType, t]);
+  const [currentLocale, setCurrentLocale] = useState<Locale>(() => {
+    try {
+      const storedLocale = localStorage.getItem("obsidian-copilot-locale");
+      return storedLocale && (storedLocale === "en" || storedLocale === "zh-CN")
+        ? (storedLocale as Locale)
+        : DEFAULT_LOCALE;
+    } catch (error) {
+      console.error("Error accessing localStorage:", error);
+      return DEFAULT_LOCALE;
+    }
+  });
+
+  // 监听语言变化
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "obsidian-copilot-locale" && e.newValue) {
+        if (e.newValue === "en" || e.newValue === "zh-CN") {
+          setCurrentLocale(e.newValue as Locale);
+        }
+      }
+    };
+
+    const handleLocaleChange = (e: CustomEvent<{ locale: Locale }>) => {
+      setCurrentLocale(e.detail.locale);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener(LOCALE_CHANGE_EVENT as any, handleLocaleChange as any);
+
+    // 定期检查localStorage中的语言设置
+    const checkInterval = setInterval(() => {
+      try {
+        const storedLocale = localStorage.getItem("obsidian-copilot-locale");
+        if (
+          storedLocale &&
+          (storedLocale === "en" || storedLocale === "zh-CN") &&
+          storedLocale !== currentLocale
+        ) {
+          setCurrentLocale(storedLocale as Locale);
+        }
+      } catch (error) {
+        console.error("Error checking localStorage:", error);
+      }
+    }, 1000);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener(LOCALE_CHANGE_EVENT as any, handleLocaleChange as any);
+      clearInterval(checkInterval);
+    };
+  }, [currentLocale]);
+
+  const prompts = useMemo(() => getRandomPrompt(chainType), [chainType]);
   const settings = useSettingsValue();
   const indexVaultToVectorStore = settings.indexVaultToVectorStore as VAULT_VECTOR_STORE_STRATEGY;
+
+  // 设置当前语言
+  useEffect(() => {
+    localeService.setLocale(currentLocale);
+  }, [currentLocale]);
 
   return (
     <div className="flex flex-col gap-4">
       <Card className="w-full bg-transparent">
         <CardHeader className="px-2">
-          <CardTitle>{t("suggestedPrompts.title")}</CardTitle>
+          <CardTitle>{localeService.getTranslation("suggestedPrompts.title")}</CardTitle>
         </CardHeader>
         <CardContent className="p-2 pt-0">
           <div className="flex flex-col gap-2">
@@ -118,8 +180,8 @@ export const SuggestedPrompts: React.FC<SuggestedPromptsProps> = ({ onClick }) =
                 className="flex gap-2 p-2 justify-between text-sm rounded-md border border-border border-solid"
               >
                 <div className="flex flex-col gap-1">
-                  <div className="text-muted">{prompt.title}</div>
-                  <div>{prompt.text}</div>
+                  <div className="text-muted">{localeService.getTranslation(prompt.titleKey)}</div>
+                  <div>{localeService.getTranslation(prompt.textKey)}</div>
                 </div>
                 <div className="flex items-start h-full">
                   <Tooltip>
@@ -128,12 +190,14 @@ export const SuggestedPrompts: React.FC<SuggestedPromptsProps> = ({ onClick }) =
                         variant="ghost2"
                         size="fit"
                         className="text-muted"
-                        onClick={() => onClick(prompt.text)}
+                        onClick={() => onClick(localeService.getTranslation(prompt.textKey))}
                       >
                         <PlusCircle className="size-4" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>{t("suggestedPrompts.addToChat")}</TooltipContent>
+                    <TooltipContent>
+                      {localeService.getTranslation("suggestedPrompts.addToChat")}
+                    </TooltipContent>
                   </Tooltip>
                 </div>
               </div>
@@ -143,20 +207,25 @@ export const SuggestedPrompts: React.FC<SuggestedPromptsProps> = ({ onClick }) =
       </Card>
       {chainType === ChainType.VAULT_QA_CHAIN && (
         <div className="text-sm border border-border border-solid p-2 rounded-md">
-          {t("suggestedPrompts.qaInstructions")}
+          {localeService.getTranslation("suggestedPrompts.qaInstructions")}
         </div>
       )}
       {chainType === ChainType.VAULT_QA_CHAIN &&
         indexVaultToVectorStore === VAULT_VECTOR_STORE_STRATEGY.NEVER && (
           <div className="text-sm border border-border border-solid p-2 rounded-md">
             <div>
-              <TriangleAlert className="size-4" /> {t("suggestedPrompts.indexWarningPrefix")}{" "}
-              <b>{t("vectorStoreStrategy.never")}</b>.
-              {t("suggestedPrompts.indexWarningInstructions")}{" "}
-              <span className="text-accent">{t("suggestedPrompts.refreshIndex")}</span>{" "}
-              {t("suggestedPrompts.indexWarningOr")}
-              <span className="text-accent">{t("suggestedPrompts.indexCommand")}</span>{" "}
-              {t("suggestedPrompts.indexWarningToUpdate")}
+              <TriangleAlert className="size-4" />{" "}
+              {localeService.getTranslation("suggestedPrompts.indexWarningPrefix")}{" "}
+              <b>{localeService.getTranslation("vectorStoreStrategy.never")}</b>.
+              {localeService.getTranslation("suggestedPrompts.indexWarningInstructions")}{" "}
+              <span className="text-accent">
+                {localeService.getTranslation("suggestedPrompts.refreshIndex")}
+              </span>{" "}
+              {localeService.getTranslation("suggestedPrompts.indexWarningOr")}
+              <span className="text-accent">
+                {localeService.getTranslation("suggestedPrompts.indexCommand")}
+              </span>{" "}
+              {localeService.getTranslation("suggestedPrompts.indexWarningToUpdate")}
             </div>
           </div>
         )}
