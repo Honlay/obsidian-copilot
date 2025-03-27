@@ -1,9 +1,11 @@
 import React from "react";
 import { SettingItem } from "@/components/ui/setting-item";
 import { updateSetting, useSettingsValue } from "@/settings/model";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 
 export const AdvancedSettings: React.FC = () => {
   const settings = useSettingsValue();
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-4">
@@ -11,18 +13,18 @@ export const AdvancedSettings: React.FC = () => {
       <section>
         <SettingItem
           type="textarea"
-          title="User System Prompt"
-          description="Customize the system prompt for all messages, may result in unexpected behavior!"
+          title={t("advancedSettings.userSystemPrompt.title")}
+          description={t("advancedSettings.userSystemPrompt.description")}
           value={settings.userSystemPrompt}
           onChange={(value) => updateSetting("userSystemPrompt", value)}
-          placeholder="Enter your system prompt here..."
+          placeholder={t("advancedSettings.userSystemPrompt.placeholder")}
         />
 
         <div className="space-y-4">
           <SettingItem
             type="switch"
-            title="Enable Encryption"
-            description="Enable encryption for the API keys."
+            title={t("advancedSettings.enableEncryption.title")}
+            description={t("advancedSettings.enableEncryption.description")}
             checked={settings.enableEncryption}
             onCheckedChange={(checked) => {
               updateSetting("enableEncryption", checked);
@@ -31,8 +33,8 @@ export const AdvancedSettings: React.FC = () => {
 
           <SettingItem
             type="switch"
-            title="Debug Mode"
-            description="Debug mode will log some debug message to the console."
+            title={t("advancedSettings.debugMode.title")}
+            description={t("advancedSettings.debugMode.description")}
             checked={settings.debug}
             onCheckedChange={(checked) => {
               updateSetting("debug", checked);

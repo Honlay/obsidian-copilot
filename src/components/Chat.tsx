@@ -19,6 +19,7 @@ import { err2String, formatDateTime } from "@/utils";
 import { Notice, TFile } from "obsidian";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Buffer } from "buffer";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 
 interface ChatProps {
   sharedState: SharedState;
@@ -37,6 +38,7 @@ const Chat: React.FC<ChatProps> = ({
   fileParserManager,
   plugin,
 }) => {
+  const { t } = useTranslation();
   const settings = useSettingsValue();
   const eventTarget = useContext(EventTargetContext);
   const [chatHistory, addMessage, clearMessages] = useSharedState(sharedState);
@@ -241,7 +243,7 @@ const Chat: React.FC<ChatProps> = ({
       const visibleMessages = chatHistory.filter((message) => message.isVisible);
 
       if (visibleMessages.length === 0) {
-        new Notice("No messages to save.");
+        new Notice(t("chat.noMessagesToSave"));
         return;
       }
 
@@ -252,7 +254,7 @@ const Chat: React.FC<ChatProps> = ({
       const chatContent = visibleMessages
         .map(
           (message) =>
-            `**${message.sender}**: ${message.message}\n[Timestamp: ${message.timestamp?.display}]`
+            `**${message.sender}**: ${message.message}\n[${t("chat.timestamp")}: ${message.timestamp?.display}]`
         )
         .join("\n\n");
 
@@ -276,7 +278,7 @@ const Chat: React.FC<ChatProps> = ({
               .join(" ")
               .replace(/[\\/:*?"<>|]/g, "") // Remove invalid filename characters
               .trim()
-          : "Untitled Chat";
+          : t("chat.untitledChat");
 
         // Parse the custom format and replace variables
         let customFileName = settings.defaultConversationNoteName || "{$date}_{$time}__{$topic}";
@@ -306,11 +308,11 @@ ${chatContent}`;
         if (existingFile instanceof TFile) {
           // If the file exists, update its content
           await app.vault.modify(existingFile, noteContentWithTimestamp);
-          new Notice(`Chat updated in existing note: ${noteFileName}`);
+          new Notice(t("chat.chatUpdatedInNote", { fileName: noteFileName }));
         } else {
           // If the file doesn't exist, create a new one
           await app.vault.create(noteFileName, noteContentWithTimestamp);
-          new Notice(`Chat saved as new note: ${noteFileName}`);
+          new Notice(t("chat.chatSavedAsNote", { fileName: noteFileName }));
         }
 
         if (openNote) {
@@ -322,7 +324,7 @@ ${chatContent}`;
         }
       } catch (error) {
         console.error("Error saving chat as note:", err2String(error));
-        new Notice("Failed to save chat as note. Check console for details.");
+        new Notice(t("chat.failedToSaveChat"));
       }
     },
     [
@@ -332,6 +334,7 @@ ${chatContent}`;
       settings.defaultConversationTag,
       settings.defaultSaveFolder,
       settings.defaultConversationNoteName,
+      t,
     ]
   );
 
@@ -353,7 +356,7 @@ ${chatContent}`;
       const lastUserMessageIndex = messageIndex - 1;
 
       if (lastUserMessageIndex < 0 || chatHistory[lastUserMessageIndex].sender !== USER_SENDER) {
-        new Notice("Cannot regenerate the first message or a user message.");
+        new Notice(t("chat.cannotRegenerateFirstMessage"));
         return;
       }
 
@@ -387,16 +390,16 @@ ${chatContent}`;
           { debug: settings.debug }
         );
         if (regeneratedResponse && settings.debug) {
-          console.log("Message regenerated successfully");
+          console.log(t("chat.messageRegeneratedSuccess"));
         }
       } catch (error) {
         console.error("Error regenerating message:", error);
-        new Notice("Failed to regenerate message. Please try again.");
+        new Notice(t("chat.failedToRegenerateMessage"));
       } finally {
         setLoading(false);
       }
     },
-    [addMessage, chainManager, chatHistory, clearMessages, settings.debug]
+    [addMessage, chainManager, chatHistory, clearMessages, settings.debug, t]
   );
 
   const handleEdit = useCallback(

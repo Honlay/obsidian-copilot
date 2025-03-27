@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { PasswordInput } from "@/components/ui/password-input";
 import { SettingKeyProviders, ProviderSettingsKeyMap } from "@/constants";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 import { CopilotSettings } from "@/settings/model";
 import { err2String, getNeedSetKeyProvider, getProviderInfo, getProviderLabel } from "@/utils";
 import { Loader2 } from "lucide-react";
@@ -37,6 +38,7 @@ const ApiKeyDialog: React.FC<ApiKeyDialogProps> = ({
   updateSetting,
   modalContainer,
 }) => {
+  const { t } = useTranslation();
   const [verifyingProviders, setVerifyingProviders] = useState<Set<SettingKeyProviders>>(new Set());
   const [unverifiedKeys, setUnverifiedKeys] = useState<Set<SettingKeyProviders>>(new Set());
 
@@ -83,10 +85,7 @@ const ApiKeyDialog: React.FC<ApiKeyDialogProps> = ({
       const defaultTestModel = getProviderInfo(provider).testModel;
 
       if (!defaultTestModel) {
-        new Notice(
-          "API key verification failed: No default test model found for the selected provider.",
-          10000
-        );
+        new Notice(t("apiKeyDialog.errorNoDefaultTestModel"), 10000);
         return;
       }
 
@@ -98,7 +97,7 @@ const ApiKeyDialog: React.FC<ApiKeyDialogProps> = ({
       };
       await ChatModelManager.getInstance().ping(customModel);
 
-      new Notice("API key verified successfully!");
+      new Notice(t("apiKeyDialog.verificationSuccess"));
       setUnverifiedKeys((prev) => {
         const next = new Set(prev);
         next.delete(provider);
@@ -106,7 +105,7 @@ const ApiKeyDialog: React.FC<ApiKeyDialogProps> = ({
       });
     } catch (error) {
       console.error("API key verification failed:", error);
-      new Notice("API key verification failed: " + err2String(error), 10000);
+      new Notice(t("apiKeyDialog.verificationFailed") + err2String(error), 10000);
     } finally {
       setVerifyingProviders((prev) => {
         const next = new Set(prev);
@@ -120,10 +119,8 @@ const ApiKeyDialog: React.FC<ApiKeyDialogProps> = ({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent container={modalContainer} className="sm:max-w-[480px]">
         <DialogHeader>
-          <DialogTitle>AI Provider Settings</DialogTitle>
-          <DialogDescription>
-            Configure your AI providers by adding their API keys.
-          </DialogDescription>
+          <DialogTitle>{t("apiKeyDialog.title")}</DialogTitle>
+          <DialogDescription>{t("apiKeyDialog.description")}</DialogDescription>
         </DialogHeader>
         <div className="space-y-6 py-4">
           <div className="space-y-4">
@@ -138,7 +135,7 @@ const ApiKeyDialog: React.FC<ApiKeyDialogProps> = ({
                       rel="noopener noreferrer"
                       className="text-[10px] text-accent hover:text-accent-hover"
                     >
-                      Get {getProviderLabel(item.provider)} Key
+                      {t("apiKeyDialog.getKey", { provider: getProviderLabel(item.provider) })}
                     </a>
                   )}
                 </div>
@@ -163,12 +160,12 @@ const ApiKeyDialog: React.FC<ApiKeyDialogProps> = ({
                         {verifyingProviders.has(item.provider) ? (
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         ) : (
-                          "Verify"
+                          t("apiKeyDialog.verify")
                         )}
                       </Button>
                     ) : (
                       <span className="text-success text-sm flex items-center justify-center h-9">
-                        Verified
+                        {t("apiKeyDialog.verified")}
                       </span>
                     )}
                   </div>

@@ -38,7 +38,27 @@
       "readingFiles": "Reading files",
       "searchingWeb": "Searching the web",
       "readingFileTree": "Reading file tree"
-    }
+    },
+    "inputPlaceholder": {
+      "prefix": "Ask anything. [[ for notes. / for custom prompts. ",
+      "tools": "@ for tools."
+    },
+    "dropImages": "Drop images here...",
+    "generating": "Generating...",
+    "modelLoadFailed": "Model Load Failed",
+    "mode": {
+      "chat": "chat",
+      "vault": "vault"
+    },
+    "noMessagesToSave": "No messages to save.",
+    "timestamp": "Timestamp",
+    "untitledChat": "Untitled Chat",
+    "chatUpdatedInNote": "Chat updated in existing note: {{fileName}}",
+    "chatSavedAsNote": "Chat saved as new note: {{fileName}}",
+    "failedToSaveChat": "Failed to save chat as note. Check console for details.",
+    "cannotRegenerateFirstMessage": "Cannot regenerate the first message or a user message.",
+    "messageRegeneratedSuccess": "Message regenerated successfully",
+    "failedToRegenerateMessage": "Failed to regenerate message. Please try again."
   },
   "settings": {
     "title": "Settings",
@@ -217,6 +237,126 @@
     "inheritFromChatModel": "Inherit from chat model",
     "showInContextMenu": "Show in context menu",
     "editCommand": "Edit Command"
+  },
+  "advancedSettings": {
+    "userSystemPrompt": {
+      "title": "User System Prompt",
+      "description": "Customize the system prompt for all messages, may result in unexpected behavior!",
+      "placeholder": "Enter your system prompt here..."
+    },
+    "enableEncryption": {
+      "title": "Enable Encryption",
+      "description": "Enable encryption for the API keys."
+    },
+    "debugMode": {
+      "title": "Debug Mode",
+      "description": "Debug mode will log some debug message to the console."
+    }
+  },
+  "apiKeyDialog": {
+    "title": "AI Provider Settings",
+    "description": "Configure your AI providers by adding their API keys.",
+    "getKey": "Get {{provider}} Key",
+    "verify": "Verify",
+    "verified": "Verified",
+    "verificationSuccess": "API key verified successfully!",
+    "verificationFailed": "API key verification failed: ",
+    "errorNoDefaultTestModel": "API key verification failed: No default test model found for the selected provider."
+  },
+  "commands": {
+    "addCustomPrompt": "Add custom prompt",
+    "applyAdhocPrompt": "Apply ad-hoc custom prompt",
+    "applyCustomPrompt": "Apply custom prompt",
+    "clearLocalCopilotIndex": "Clear local Copilot index",
+    "clearCopilotCache": "Clear Copilot cache",
+    "countTotalVaultTokens": "Count total tokens in your vault",
+    "countWordAndTokensSelection": "Count words and tokens in selection",
+    "deleteCustomPrompt": "Delete custom prompt",
+    "editCustomPrompt": "Edit custom prompt",
+    "findRelevantNotes": "Find relevant notes",
+    "forceReindexVault": "Force reindex vault",
+    "garbageCollectCopilotIndex": "Garbage collect Copilot index (remove files that no longer exist in vault)",
+    "indexVault": "Index (refresh) vault",
+    "inspectCopilotIndex": "Inspect Copilot index by note paths (debug)",
+    "listIndexedFiles": "List all indexed files (debug)",
+    "loadCopilotChatConversation": "Load Copilot chat conversation",
+    "openCopilotChatWindow": "Open Copilot Chat Window",
+    "removeFilesFromCopilotIndex": "Remove files from Copilot index (debug)",
+    "searchOramaDB": "Search OramaDB (debug)",
+    "toggleCopilotChatWindow": "Toggle Copilot Chat Window"
+  },
+  "abort": {
+    "userStopped": "user-stopped",
+    "newChat": "new-chat"
+  },
+  "vectorStoreStrategy": {
+    "never": "NEVER",
+    "onStartup": "ON STARTUP",
+    "onModeSwitch": "ON MODE SWITCH"
+  },
+  "relevantNotes": {
+    "title": "Relevant Notes",
+    "addToChat": "Add to Chat",
+    "similarity": "Similarity",
+    "outgoingLinks": "Outgoing links",
+    "backlinks": "Backlinks",
+    "navigateToNote": "Navigate to Note",
+    "reindexed": "Reindexed {{name}}",
+    "relevanceExplanation": "Relevance is a combination of semantic similarity and links.",
+    "notIndexed": "Note has not been indexed",
+    "reindexCurrentNote": "Reindex Current Note",
+    "noNotesFound": "No relevant notes found"
+  },
+  "suggestedPrompts": {
+    "title": "Suggested Prompts",
+    "addToChat": "Add to Chat",
+    "qaInstructions": "Please note that this is a retrieval-based QA. Questions should contain keywords and concepts that exist literally in your vault",
+    "indexWarningPrefix": "Your auto-index strategy is set to",
+    "indexWarningInstructions": "Before proceeding, click the",
+    "refreshIndex": "Refresh Index",
+    "indexWarningOr": "button below or run the",
+    "indexCommand": "Copilot command: Index (refresh) vault for QA",
+    "indexWarningToUpdate": "to update the index.",
+    "categories": {
+      "activeNote": "Active Note Insights",
+      "noteLink": "Note Link Chat",
+      "testLLM": "Test LLM",
+      "vaultQA": "Vault Q&A",
+      "copilotPlus": "Copilot Plus"
+    },
+    "prompts": {
+      "activeNote": {
+        "followUpQuestions": "Provide three follow-up questions worded as if I'm asking you based on {activeNote}?",
+        "keyQuestions": "What key questions does {activeNote} answer?",
+        "quickRecap": "Give me a quick recap of {activeNote} in two sentences."
+      },
+      "noteLink": {
+        "improvements": "Based on [[<note>]], what improvements should we focus on next?",
+        "keyPoints": "Summarize the key points from [[<note>]].",
+        "recentUpdates": "Summarize the recent updates from [[<note>]].",
+        "writingFeedback": "Roast my writing in [[<note>]] and give concrete actionable feedback"
+      },
+      "testLLM": {
+        "comparison": "9.11 and 9.8, which is bigger?",
+        "longestRiver": "What's the longest river in the world?",
+        "physics": "If a lead ball and a feather are dropped simultaneously from the same height, which will reach the ground first?"
+      },
+      "vaultQA": {
+        "insights": "What insights can I gather about <topic> from my notes?",
+        "explain": "Explain <concept> based on my stored notes.",
+        "highlight": "Highlight important details on <topic> from my notes.",
+        "missingQuestions": "Based on my notes on <topic>, what is the question that I should be asking, but am not?"
+      },
+      "copilotPlus": {
+        "weeklyRecap": "Give me a recap of last week @vault",
+        "topicTakeaways": "What are the key takeaways from my notes on <topic> @vault",
+        "urlSummary": "Summarize <url> in under 10 bullet points",
+        "youtube": "@youtube <video_url>",
+        "webSearch": "@web what are most recent updates in the AI industry",
+        "paperInsights": "What are the key insights from this paper <arxiv_url>",
+        "pdfMethods": "What new methods are proposed in this paper [[<note_with_embedded_pdf>]]"
+      }
+    }
   },
   "errors": {
     "emptyIndexError": "Copilot index does not exist. Please index your vault first!\n\n1. Set a working embedding model in QA settings. If it's not a local model, don't forget to set the API key. \n\n2. Click 'Refresh Index for Vault' and wait for indexing to complete. If you encounter the rate limiting error, please turn your request per second down in QA setting."

@@ -2,6 +2,9 @@ import { CustomModel } from "@/aiParams";
 import { DEFAULT_INLINE_EDIT_COMMANDS } from "@/commands/constants";
 import { type CopilotSettings } from "@/settings/model";
 import { ChainType } from "./chainFactory";
+import LocaleService from "@/i18n/LocaleService";
+
+const localeService = LocaleService.getInstance();
 
 export const BREVILABS_API_BASE_URL = "https://api.brevilabs.com/v1";
 export const CHAT_VIEWTYPE = "copilot-chat-view";
@@ -20,18 +23,17 @@ export const DEFAULT_SYSTEM_PROMPT = `You are Obsidian Copilot, a helpful assist
   10. When generating a table, use compact formatting without excessive whitespace.
   11. Always respond in the language of the user's query.
   12. Do NOT mention the additional context provided such as getCurrentTime and getTimeRangeMs if it's irrelevant to the user message.`;
-export const EMPTY_INDEX_ERROR_MESSAGE =
-  "Copilot index does not exist. Please index your vault first!\n\n1. Set a working embedding model in QA settings. If it's not a local model, don't forget to set the API key. \n\n2. Click 'Refresh Index for Vault' and wait for indexing to complete. If you encounter the rate limiting error, please turn your request per second down in QA setting.";
+export const EMPTY_INDEX_ERROR_MESSAGE = localeService.getTranslation("errors.emptyIndexError");
 export const CHUNK_SIZE = 6000;
 export const CONTEXT_SCORE_THRESHOLD = 0.4;
 export const TEXT_WEIGHT = 0.4;
 export const PLUS_MODE_DEFAULT_SOURCE_CHUNKS = 15;
 export const MAX_CHARS_FOR_LOCAL_SEARCH_CONTEXT = 448000;
 export const LOADING_MESSAGES = {
-  DEFAULT: "",
-  READING_FILES: "Reading files",
-  SEARCHING_WEB: "Searching the web",
-  READING_FILE_TREE: "Reading file tree",
+  DEFAULT: localeService.getTranslation("chat.loadingMessages.default"),
+  READING_FILES: localeService.getTranslation("chat.loadingMessages.readingFiles"),
+  SEARCHING_WEB: localeService.getTranslation("chat.loadingMessages.searchingWeb"),
+  READING_FILE_TREE: localeService.getTranslation("chat.loadingMessages.readingFileTree"),
 };
 export const PLUS_UTM_MEDIUMS = {
   SETTINGS: "settings",
@@ -82,9 +84,9 @@ export enum ModelCapability {
 }
 
 export const MODEL_CAPABILITIES: Record<ModelCapability, string> = {
-  reasoning: "This model supports general reasoning tasks.",
-  vision: "This model supports image inputs.",
-  websearch: "This model can access the internet.",
+  reasoning: localeService.getTranslation("modelSettings.capabilities.reasoning"),
+  vision: localeService.getTranslation("modelSettings.capabilities.vision"),
+  websearch: localeService.getTranslation("modelSettings.capabilities.websearch"),
 };
 
 export const BUILTIN_CHAT_MODELS: CustomModel[] = [
@@ -385,6 +387,22 @@ export enum VAULT_VECTOR_STORE_STRATEGY {
   ON_MODE_SWITCH = "ON MODE SWITCH",
 }
 
+// 枚举值文本的翻译版本
+export const getTranslatedVaultVectorStoreStrategy = (
+  strategy: VAULT_VECTOR_STORE_STRATEGY
+): string => {
+  switch (strategy) {
+    case VAULT_VECTOR_STORE_STRATEGY.NEVER:
+      return localeService.getTranslation("vectorStoreStrategy.never");
+    case VAULT_VECTOR_STORE_STRATEGY.ON_STARTUP:
+      return localeService.getTranslation("vectorStoreStrategy.onStartup");
+    case VAULT_VECTOR_STORE_STRATEGY.ON_MODE_SWITCH:
+      return localeService.getTranslation("vectorStoreStrategy.onModeSwitch");
+    default:
+      return strategy;
+  }
+};
+
 export const VAULT_VECTOR_STORE_STRATEGIES = [
   VAULT_VECTOR_STORE_STRATEGY.NEVER,
   VAULT_VECTOR_STORE_STRATEGY.ON_STARTUP,
@@ -420,27 +438,46 @@ export const COMMAND_IDS = {
 } as const;
 
 export const COMMAND_NAMES: Record<CommandId, string> = {
-  [COMMAND_IDS.ADD_CUSTOM_PROMPT]: "Add custom prompt",
-  [COMMAND_IDS.APPLY_ADHOC_PROMPT]: "Apply ad-hoc custom prompt",
-  [COMMAND_IDS.APPLY_CUSTOM_PROMPT]: "Apply custom prompt",
-  [COMMAND_IDS.CLEAR_LOCAL_COPILOT_INDEX]: "Clear local Copilot index",
-  [COMMAND_IDS.CLEAR_COPILOT_CACHE]: "Clear Copilot cache",
-  [COMMAND_IDS.COUNT_TOTAL_VAULT_TOKENS]: "Count total tokens in your vault",
-  [COMMAND_IDS.COUNT_WORD_AND_TOKENS_SELECTION]: "Count words and tokens in selection",
-  [COMMAND_IDS.DELETE_CUSTOM_PROMPT]: "Delete custom prompt",
-  [COMMAND_IDS.EDIT_CUSTOM_PROMPT]: "Edit custom prompt",
-  [COMMAND_IDS.FIND_RELEVANT_NOTES]: "Find relevant notes",
-  [COMMAND_IDS.FORCE_REINDEX_VAULT_TO_COPILOT_INDEX]: "Force reindex vault",
-  [COMMAND_IDS.GARBAGE_COLLECT_COPILOT_INDEX]:
-    "Garbage collect Copilot index (remove files that no longer exist in vault)",
-  [COMMAND_IDS.INDEX_VAULT_TO_COPILOT_INDEX]: "Index (refresh) vault",
-  [COMMAND_IDS.INSPECT_COPILOT_INDEX_BY_NOTE_PATHS]: "Inspect Copilot index by note paths (debug)",
-  [COMMAND_IDS.LIST_INDEXED_FILES]: "List all indexed files (debug)",
-  [COMMAND_IDS.LOAD_COPILOT_CHAT_CONVERSATION]: "Load Copilot chat conversation",
-  [COMMAND_IDS.OPEN_COPILOT_CHAT_WINDOW]: "Open Copilot Chat Window",
-  [COMMAND_IDS.REMOVE_FILES_FROM_COPILOT_INDEX]: "Remove files from Copilot index (debug)",
-  [COMMAND_IDS.SEARCH_ORAMA_DB]: "Search OramaDB (debug)",
-  [COMMAND_IDS.TOGGLE_COPILOT_CHAT_WINDOW]: "Toggle Copilot Chat Window",
+  [COMMAND_IDS.ADD_CUSTOM_PROMPT]: localeService.getTranslation("commands.addCustomPrompt"),
+  [COMMAND_IDS.APPLY_ADHOC_PROMPT]: localeService.getTranslation("commands.applyAdhocPrompt"),
+  [COMMAND_IDS.APPLY_CUSTOM_PROMPT]: localeService.getTranslation("commands.applyCustomPrompt"),
+  [COMMAND_IDS.CLEAR_LOCAL_COPILOT_INDEX]: localeService.getTranslation(
+    "commands.clearLocalCopilotIndex"
+  ),
+  [COMMAND_IDS.CLEAR_COPILOT_CACHE]: localeService.getTranslation("commands.clearCopilotCache"),
+  [COMMAND_IDS.COUNT_TOTAL_VAULT_TOKENS]: localeService.getTranslation(
+    "commands.countTotalVaultTokens"
+  ),
+  [COMMAND_IDS.COUNT_WORD_AND_TOKENS_SELECTION]: localeService.getTranslation(
+    "commands.countWordAndTokensSelection"
+  ),
+  [COMMAND_IDS.DELETE_CUSTOM_PROMPT]: localeService.getTranslation("commands.deleteCustomPrompt"),
+  [COMMAND_IDS.EDIT_CUSTOM_PROMPT]: localeService.getTranslation("commands.editCustomPrompt"),
+  [COMMAND_IDS.FIND_RELEVANT_NOTES]: localeService.getTranslation("commands.findRelevantNotes"),
+  [COMMAND_IDS.FORCE_REINDEX_VAULT_TO_COPILOT_INDEX]: localeService.getTranslation(
+    "commands.forceReindexVault"
+  ),
+  [COMMAND_IDS.GARBAGE_COLLECT_COPILOT_INDEX]: localeService.getTranslation(
+    "commands.garbageCollectCopilotIndex"
+  ),
+  [COMMAND_IDS.INDEX_VAULT_TO_COPILOT_INDEX]: localeService.getTranslation("commands.indexVault"),
+  [COMMAND_IDS.INSPECT_COPILOT_INDEX_BY_NOTE_PATHS]: localeService.getTranslation(
+    "commands.inspectCopilotIndex"
+  ),
+  [COMMAND_IDS.LIST_INDEXED_FILES]: localeService.getTranslation("commands.listIndexedFiles"),
+  [COMMAND_IDS.LOAD_COPILOT_CHAT_CONVERSATION]: localeService.getTranslation(
+    "commands.loadCopilotChatConversation"
+  ),
+  [COMMAND_IDS.OPEN_COPILOT_CHAT_WINDOW]: localeService.getTranslation(
+    "commands.openCopilotChatWindow"
+  ),
+  [COMMAND_IDS.REMOVE_FILES_FROM_COPILOT_INDEX]: localeService.getTranslation(
+    "commands.removeFilesFromCopilotIndex"
+  ),
+  [COMMAND_IDS.SEARCH_ORAMA_DB]: localeService.getTranslation("commands.searchOramaDB"),
+  [COMMAND_IDS.TOGGLE_COPILOT_CHAT_WINDOW]: localeService.getTranslation(
+    "commands.toggleCopilotChatWindow"
+  ),
 };
 
 export type CommandId = (typeof COMMAND_IDS)[keyof typeof COMMAND_IDS];
@@ -508,3 +545,15 @@ export enum ABORT_REASON {
   USER_STOPPED = "user-stopped",
   NEW_CHAT = "new-chat",
 }
+
+// 获取已翻译的中止原因
+export const getTranslatedAbortReason = (reason: ABORT_REASON): string => {
+  switch (reason) {
+    case ABORT_REASON.USER_STOPPED:
+      return localeService.getTranslation("abort.userStopped");
+    case ABORT_REASON.NEW_CHAT:
+      return localeService.getTranslation("abort.newChat");
+    default:
+      return reason;
+  }
+};

@@ -3,7 +3,7 @@ import { RebuildIndexConfirmModal } from "@/components/modals/RebuildIndexConfir
 import { Button } from "@/components/ui/button";
 import { SettingItem } from "@/components/ui/setting-item";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { VAULT_VECTOR_STORE_STRATEGIES } from "@/constants";
+import { VAULT_VECTOR_STORE_STRATEGIES, getTranslatedVaultVectorStoreStrategy } from "@/constants";
 import { useTranslation } from "@/i18n/hooks/useTranslation";
 import VectorStoreManager from "@/search/vectorStoreManager";
 import { updateSetting, useSettingsValue } from "@/settings/model";
@@ -93,7 +93,7 @@ export const QASettings: React.FC = () => {
               updateSetting("indexVaultToVectorStore", value);
             }}
             options={VAULT_VECTOR_STORE_STRATEGIES.map((strategy) => ({
-              label: strategy,
+              label: getTranslatedVaultVectorStoreStrategy(strategy),
               value: strategy,
             }))}
             placeholder={t("qaSettings.strategy")}

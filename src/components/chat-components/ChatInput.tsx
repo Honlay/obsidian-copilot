@@ -40,6 +40,7 @@ import React, {
 } from "react";
 import { useDropzone } from "react-dropzone";
 import ContextControl from "./ContextControl";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 
 interface ChatInputProps {
   inputMessage: string;
@@ -84,6 +85,7 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
     },
     ref
   ) => {
+    const { t } = useTranslation();
     const [historyIndex, setHistoryIndex] = useState(-1);
     const [tempInput, setTempInput] = useState("");
     const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
@@ -462,8 +464,8 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
             ref={textAreaRef}
             className="w-full bg-transparent focus-visible:ring-0 border-none min-h-[60px] max-h-40 overflow-y-auto resize-none px-2 rounded-md text-sm text-normal"
             placeholder={
-              "Ask anything. [[ for notes. / for custom prompts. " +
-              (isCopilotPlus ? "@ for tools." : "")
+              t("chat.inputPlaceholder.prefix") +
+              (isCopilotPlus ? t("chat.inputPlaceholder.tools") : "")
             }
             value={inputMessage}
             onChange={handleInputChange}
@@ -473,10 +475,9 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
           {isCopilotPlus && (
             <>
               <input {...getInputProps()} />
-              {/* Overlay that appears when dragging */}
               {isDragActive && (
                 <div className="absolute inset-0 bg-primary border border-dashed border-primary rounded-md flex items-center justify-center">
-                  <span className="text-primary">Drop images here...</span>
+                  <span className="text-primary">{t("chat.dropImages")}</span>
                 </div>
               )}
             </>
@@ -487,14 +488,14 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
           {isGenerating ? (
             <div className="flex items-center gap-1 px-1 text-faint text-sm">
               <Loader2 className="size-3 animate-spin" />
-              <span>Generating...</span>
+              <span>{t("chat.generating")}</span>
             </div>
           ) : (
             <DropdownMenu open={isModelDropdownOpen} onOpenChange={setIsModelDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost2" size="fit">
                   {modelError ? (
-                    <span className="text-error">Model Load Failed</span>
+                    <span className="text-error">{t("chat.modelLoadFailed")}</span>
                   ) : settings.activeModels.find(
                       (model) => model.enabled && getModelKeyFromModel(model) === currentModelKey
                     ) ? (
@@ -508,7 +509,7 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
                       iconSize={8}
                     />
                   ) : (
-                    "Select Model"
+                    t("settings.selectModel")
                   )}
                   <ChevronDown className="size-5 mt-0.5" />
                 </Button>
@@ -564,7 +565,7 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
                 onClick={() => onStopGenerating()}
               >
                 <StopCircle className="size-4" />
-                Stop
+                {t("chat.stop")}
               </Button>
             ) : (
               <>
@@ -586,7 +587,7 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
                   onClick={() => onSendMessage(false)}
                 >
                   <CornerDownLeft className="!size-3" />
-                  <span>chat</span>
+                  <span>{t("chat.mode.chat")}</span>
                 </Button>
 
                 {currentChain === "copilot_plus" && (
@@ -610,7 +611,7 @@ const ChatInput = forwardRef<{ focus: () => void }, ChatInputProps>(
                           <CornerDownLeft className="!size-3" />
                         </div>
                       )}
-                      <span>vault</span>
+                      <span>{t("chat.mode.vault")}</span>
                     </div>
                   </Button>
                 )}

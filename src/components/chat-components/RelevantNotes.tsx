@@ -4,6 +4,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useActiveFile } from "@/hooks/useActiveFile";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 import { cn } from "@/lib/utils";
 import {
   findRelevantNotes,
@@ -73,6 +74,7 @@ function RelevantNote({
   onAddToChat: () => void;
   onNavigateToNote: (openInNewLeaf: boolean) => void;
 }) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [fileContent, setFileContent] = useState<string | null>(null);
 
@@ -149,7 +151,7 @@ function RelevantNote({
               <PlusCircle className="size-4" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Add to Chat</TooltipContent>
+          <TooltipContent>{t("relevantNotes.addToChat")}</TooltipContent>
         </Tooltip>
       </div>
 
@@ -168,19 +170,21 @@ function RelevantNote({
         <div className="flex item-center gap-4 px-4 py-2 border-[0px] border-t border-solid border-border text-xs text-muted">
           {note.metadata.similarityScore != null && (
             <div className="flex items-center gap-1">
-              <span>Similarity: {(note.metadata.similarityScore * 100).toFixed(1)}%</span>
+              <span>
+                {t("relevantNotes.similarity")}: {(note.metadata.similarityScore * 100).toFixed(1)}%
+              </span>
             </div>
           )}
           {note.metadata.hasOutgoingLinks && (
             <div className="flex items-center gap-1">
               <FileOutput className="size-4" />
-              <span>Outgoing links</span>
+              <span>{t("relevantNotes.outgoingLinks")}</span>
             </div>
           )}
           {note.metadata.hasBacklinks && (
             <div className="flex items-center gap-1">
               <FileInput className="size-4" />
-              <span>Backlinks</span>
+              <span>{t("relevantNotes.backlinks")}</span>
             </div>
           )}
         </div>
@@ -200,6 +204,7 @@ function RelevantNotePopover({
   onNavigateToNote: (openInNewLeaf: boolean) => void;
   children: React.ReactNode;
 }) {
+  const { t } = useTranslation();
   return (
     <Popover key={note.document.path}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
@@ -211,7 +216,7 @@ function RelevantNotePopover({
             onClick={onAddToChat}
             className="!bg-transparent inline-flex items-center gap-2 border border-border border-solid !shadow-none hover:!bg-interactive-hover"
           >
-            Add to Chat <PlusCircle className="size-4" />
+            {t("relevantNotes.addToChat")} <PlusCircle className="size-4" />
           </button>
           <button
             onClick={(e) => {
@@ -220,7 +225,7 @@ function RelevantNotePopover({
             }}
             className="!bg-transparent inline-flex items-center gap-2 border border-border border-solid !shadow-none hover:!bg-interactive-hover"
           >
-            Navigate to Note <ArrowRight className="size-4" />
+            {t("relevantNotes.navigateToNote")} <ArrowRight className="size-4" />
           </button>
         </div>
       </PopoverContent>
@@ -238,6 +243,7 @@ export const RelevantNotes = memo(
     onInsertToChat: (prompt: string) => void;
     defaultOpen?: boolean;
   }) => {
+    const { t } = useTranslation();
     const [refresher, setRefresher] = useState(0);
     const [isOpen, setIsOpen] = useState(defaultOpen);
     const relevantNotes = useRelevantNotes(refresher);
@@ -256,7 +262,7 @@ export const RelevantNotes = memo(
     const refreshIndex = async () => {
       if (activeFile) {
         await VectorStoreManager.getInstance().reindexFile(activeFile);
-        new Notice(`Reindexed ${activeFile.name}`);
+        new Notice(t("relevantNotes.reindexed", { name: activeFile.name }));
         setRefresher(refresher + 1);
       }
     };
@@ -270,13 +276,13 @@ export const RelevantNotes = memo(
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <div className="flex justify-between items-center pl-1 pb-2">
             <div className="flex gap-2 items-center flex-1">
-              <span className="font-semibold text-normal">Relevant Notes</span>
+              <span className="font-semibold text-normal">{t("relevantNotes.title")}</span>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Info className="size-4 text-muted" />
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="w-64">
-                  Relevance is a combination of semantic similarity and links.
+                  {t("relevantNotes.relevanceExplanation")}
                 </TooltipContent>
               </Tooltip>
 
@@ -285,7 +291,7 @@ export const RelevantNotes = memo(
                   <TooltipTrigger asChild>
                     <TriangleAlert className="size-4 text-warning" />
                   </TooltipTrigger>
-                  <TooltipContent side="bottom">Note has not been indexed</TooltipContent>
+                  <TooltipContent side="bottom">{t("relevantNotes.notIndexed")}</TooltipContent>
                 </Tooltip>
               )}
             </div>
@@ -296,7 +302,9 @@ export const RelevantNotes = memo(
                     <RefreshCcw className="size-4" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom">Reindex Current Note</TooltipContent>
+                <TooltipContent side="bottom">
+                  {t("relevantNotes.reindexCurrentNote")}
+                </TooltipContent>
               </Tooltip>
               {relevantNotes.length > 0 && (
                 <CollapsibleTrigger asChild>
@@ -309,7 +317,7 @@ export const RelevantNotes = memo(
           </div>
           {relevantNotes.length === 0 && (
             <div className="flex flex-wrap gap-x-2 gap-y-1 max-h-12 overflow-y-hidden px-1">
-              <span className="text-xs text-muted">No relevant notes found</span>
+              <span className="text-xs text-muted">{t("relevantNotes.noNotesFound")}</span>
             </div>
           )}
           {!isOpen && relevantNotes.length > 0 && (

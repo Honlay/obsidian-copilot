@@ -37,7 +37,27 @@
       "readingFiles": "正在读取文件",
       "searchingWeb": "正在搜索网络",
       "readingFileTree": "正在读取文件树"
-    }
+    },
+    "inputPlaceholder": {
+      "prefix": "输入任何内容。[[ 引用笔记。/ 使用自定义提示词。",
+      "tools": "@ 使用工具。"
+    },
+    "dropImages": "拖放图片到此处...",
+    "generating": "生成中...",
+    "modelLoadFailed": "模型加载失败",
+    "mode": {
+      "chat": "聊天",
+      "vault": "知识库"
+    },
+    "noMessagesToSave": "没有可保存的消息。",
+    "timestamp": "时间戳",
+    "untitledChat": "未命名聊天",
+    "chatUpdatedInNote": "聊天已更新到现有笔记：{{fileName}}",
+    "chatSavedAsNote": "聊天已保存为新笔记：{{fileName}}",
+    "failedToSaveChat": "保存聊天为笔记失败。请查看控制台了解详情。",
+    "cannotRegenerateFirstMessage": "无法重新生成第一条消息或用户消息。",
+    "messageRegeneratedSuccess": "消息重新生成成功",
+    "failedToRegenerateMessage": "重新生成消息失败。请重试。"
   },
   "settings": {
     "title": "设置",
@@ -216,6 +236,126 @@
     "inheritFromChatModel": "继承自聊天模型",
     "showInContextMenu": "在上下文菜单中显示",
     "editCommand": "编辑命令"
+  },
+  "advancedSettings": {
+    "userSystemPrompt": {
+      "title": "用户系统提示词",
+      "description": "自定义所有消息的系统提示词，可能会导致意外行为！",
+      "placeholder": "在此输入您的系统提示词..."
+    },
+    "enableEncryption": {
+      "title": "启用加密",
+      "description": "为API密钥启用加密功能。"
+    },
+    "debugMode": {
+      "title": "调试模式",
+      "description": "调试模式将在控制台记录一些调试信息。"
+    }
+  },
+  "apiKeyDialog": {
+    "title": "AI 提供商设置",
+    "description": "通过添加API密钥配置您的AI提供商。",
+    "getKey": "获取 {{provider}} 密钥",
+    "verify": "验证",
+    "verified": "已验证",
+    "verificationSuccess": "API密钥验证成功！",
+    "verificationFailed": "API密钥验证失败: ",
+    "errorNoDefaultTestModel": "API密钥验证失败：找不到所选提供商的默认测试模型。"
+  },
+  "commands": {
+    "addCustomPrompt": "添加自定义提示",
+    "applyAdhocPrompt": "应用临时自定义提示",
+    "applyCustomPrompt": "应用自定义提示",
+    "clearLocalCopilotIndex": "清除本地Copilot索引",
+    "clearCopilotCache": "清除Copilot缓存",
+    "countTotalVaultTokens": "统计知识库中的总标记数",
+    "countWordAndTokensSelection": "统计选中内容的单词和标记数",
+    "deleteCustomPrompt": "删除自定义提示",
+    "editCustomPrompt": "编辑自定义提示",
+    "findRelevantNotes": "查找相关笔记",
+    "forceReindexVault": "强制重新索引知识库",
+    "garbageCollectCopilotIndex": "垃圾回收Copilot索引（移除知识库中不再存在的文件）",
+    "indexVault": "索引（刷新）知识库",
+    "inspectCopilotIndex": "按笔记路径检查Copilot索引（调试）",
+    "listIndexedFiles": "列出所有已索引文件（调试）",
+    "loadCopilotChatConversation": "加载Copilot聊天对话",
+    "openCopilotChatWindow": "打开Copilot聊天窗口",
+    "removeFilesFromCopilotIndex": "从Copilot索引中移除文件（调试）",
+    "searchOramaDB": "搜索OramaDB（调试）",
+    "toggleCopilotChatWindow": "切换Copilot聊天窗口"
+  },
+  "abort": {
+    "userStopped": "用户已停止",
+    "newChat": "新聊天"
+  },
+  "vectorStoreStrategy": {
+    "never": "从不",
+    "onStartup": "启动时",
+    "onModeSwitch": "切换模式时"
+  },
+  "relevantNotes": {
+    "title": "相关笔记",
+    "addToChat": "添加到聊天",
+    "similarity": "相似度",
+    "outgoingLinks": "外部链接",
+    "backlinks": "反向链接",
+    "navigateToNote": "导航到笔记",
+    "reindexed": "已重新索引 {{name}}",
+    "relevanceExplanation": "相关性是语义相似度和链接的组合。",
+    "notIndexed": "笔记尚未被索引",
+    "reindexCurrentNote": "重新索引当前笔记",
+    "noNotesFound": "未找到相关笔记"
+  },
+  "suggestedPrompts": {
+    "title": "建议的提示词",
+    "addToChat": "添加到聊天",
+    "qaInstructions": "请注意，这是基于检索的问答功能。问题应包含在知识库中确实存在的关键词和概念",
+    "indexWarningPrefix": "您的自动索引策略设置为",
+    "indexWarningInstructions": "在继续之前，请点击下方的",
+    "refreshIndex": "刷新索引",
+    "indexWarningOr": "按钮或运行",
+    "indexCommand": "Copilot命令：索引（刷新）知识库",
+    "indexWarningToUpdate": "来更新索引。",
+    "categories": {
+      "activeNote": "当前笔记洞察",
+      "noteLink": "笔记链接聊天",
+      "testLLM": "测试模型",
+      "vaultQA": "知识库问答",
+      "copilotPlus": "Copilot Plus"
+    },
+    "prompts": {
+      "activeNote": {
+        "followUpQuestions": "基于{activeNote}，提供三个后续问题？",
+        "keyQuestions": "{activeNote}回答了哪些关键问题？",
+        "quickRecap": "用两句话快速总结{activeNote}的内容。"
+      },
+      "noteLink": {
+        "improvements": "基于[[<note>]]，我们下一步应该关注哪些改进？",
+        "keyPoints": "总结[[<note>]]的要点。",
+        "recentUpdates": "总结[[<note>]]的最新更新。",
+        "writingFeedback": "评判[[<note>]]中的写作并给出具体可行的反馈"
+      },
+      "testLLM": {
+        "comparison": "9.11和9.8，哪个更大？",
+        "longestRiver": "世界上最长的河流是什么？",
+        "physics": "如果同时从同一高度放下一个铅球和一根羽毛，哪个会先落地？"
+      },
+      "vaultQA": {
+        "insights": "从我的笔记中可以获得关于<topic>的哪些见解？",
+        "explain": "基于我保存的笔记解释<concept>。",
+        "highlight": "从我的笔记中突出显示关于<topic>的重要细节。",
+        "missingQuestions": "基于我关于<topic>的笔记，我应该问但还没有问的问题是什么？"
+      },
+      "copilotPlus": {
+        "weeklyRecap": "给我一个上周的总结 @vault",
+        "topicTakeaways": "从我关于<topic>的笔记中总结出哪些关键要点 @vault",
+        "urlSummary": "用不超过10个要点总结<url>",
+        "youtube": "@youtube <video_url>",
+        "webSearch": "@web AI行业最近有哪些更新",
+        "paperInsights": "这篇论文<arxiv_url>的关键见解是什么",
+        "pdfMethods": "这篇论文[[<note_with_embedded_pdf>]]提出了哪些新方法"
+      }
+    }
   },
   "errors": {
     "emptyIndexError": "Copilot 索引不存在。请先索引你的知识库！\n\n1. 在问答设置中设置一个可用的嵌入模型。如果不是本地模型，请确保设置API密钥。\n\n2. 点击'刷新知识库索引'并等待索引完成。如果遇到速率限制错误，请在问答设置中降低每秒请求数。"
