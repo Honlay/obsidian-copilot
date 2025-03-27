@@ -46,6 +46,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useContainerContext } from "@/settings/v2/components/ContainerContext";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 
 const SortableTableRow: React.FC<{
   command: InlineEditCommandSettings;
@@ -56,6 +57,7 @@ const SortableTableRow: React.FC<{
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: command.name,
   });
+  const { t } = useTranslation();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -130,15 +132,15 @@ const SortableTableRow: React.FC<{
                 }
               >
                 <PencilLine className="h-4 w-4 mr-2" />
-                Edit
+                {t("commandSettings.edit")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onDuplicate(command)}>
                 <Copy className="h-4 w-4 mr-2" />
-                Copy
+                {t("commandSettings.copy")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onRemove(command)} className="text-error">
                 <Trash2 className="h-4 w-4 mr-2" />
-                Delete
+                {t("commandSettings.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -150,6 +152,8 @@ const SortableTableRow: React.FC<{
 
 export const CommandSettings: React.FC = () => {
   const commands = useInlineEditCommands();
+  const { t } = useTranslation();
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -180,7 +184,7 @@ export const CommandSettings: React.FC = () => {
   const handleDuplicate = (command: InlineEditCommandSettings) => {
     const duplicatedCommand = {
       ...command,
-      name: `${command.name} (copy)`,
+      name: `${command.name} (${t("commandSettings.copyLabel")})`,
     };
     const index = commands.findIndex((c) => c === command);
     if (index !== -1) {
@@ -217,16 +221,12 @@ export const CommandSettings: React.FC = () => {
     <div className="space-y-4">
       <section>
         <div className="flex flex-col mb-4 gap-2">
-          <div className="text-xl font-bold">Custom Commands</div>
-          <div className="text-sm text-muted">
-            To trigger a custom command, highlight text in the editor and select it from the command
-            palette, or right-click and choose it from the context menu if configured.
-          </div>
+          <div className="text-xl font-bold">{t("commandSettings.title")}</div>
+          <div className="text-sm text-muted">{t("commandSettings.description")}</div>
         </div>
         {!hasModifiedCommand() && (
           <div className="border border-border border-solid p-4 rounded-md text-muted flex items-start gap-2">
-            <Lightbulb className="size-5" /> Take control of your inline edit commands! You can now
-            create your own or edit built-in ones to tailor functionality to your needs.
+            <Lightbulb className="size-5" /> {t("commandSettings.noModifiedCommandHint")}
           </div>
         )}
 
@@ -240,8 +240,10 @@ export const CommandSettings: React.FC = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-10"></TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead className="text-center w-20">In Menu</TableHead>
+                  <TableHead>{t("commandSettings.nameColumn")}</TableHead>
+                  <TableHead className="text-center w-20">
+                    {t("commandSettings.inMenuColumn")}
+                  </TableHead>
                   <TableHead className="w-10"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -278,7 +280,7 @@ export const CommandSettings: React.FC = () => {
                 ).open()
               }
             >
-              <Plus className="h-4 w-4" /> Add Command
+              <Plus className="h-4 w-4" /> {t("commandSettings.addCommand")}
             </Button>
           </div>
         </div>

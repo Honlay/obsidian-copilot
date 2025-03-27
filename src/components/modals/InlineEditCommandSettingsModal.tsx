@@ -16,6 +16,7 @@ import { getModelDisplayText } from "@/components/ui/model-display";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { logError } from "@/logger";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 
 type FormErrors = {
   name?: string;
@@ -34,6 +35,7 @@ function InlineEditCommandSettingsModalContent({
   onRemove?: () => void;
 }) {
   const settings = useSettingsValue();
+  const { t } = useTranslation();
   const activeModels = settings.activeModels
     .filter((m) => m.enabled)
     .map((model) => ({
@@ -64,7 +66,7 @@ function InlineEditCommandSettingsModalContent({
     }
 
     if (!command.prompt.trim()) {
-      newErrors.prompt = "Prompt is required";
+      newErrors.prompt = t("commandSettings.promptRequired");
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -78,34 +80,31 @@ function InlineEditCommandSettingsModalContent({
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="name">{t("commandSettings.name")}</Label>
         <Input
           id="name"
           value={command.name}
           onChange={(e) => handleUpdate("name", e.target.value)}
-          placeholder="Enter command name"
+          placeholder={t("commandSettings.enterCommandName")}
         />
         {errors.name && <div className="text-error text-sm">{errors.name}</div>}
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="prompt">Prompt</Label>
-        <div className="text-sm text-muted mb-2">
-          Use <code>{"{copilot-selection}"}</code> as a placeholder for the selected text. If not
-          included, the selected text will be appended to the prompt.
-        </div>
+        <Label htmlFor="prompt">{t("commandSettings.prompt")}</Label>
+        <div className="text-sm text-muted mb-2">{t("commandSettings.promptHelp")}</div>
         <Textarea
           id="prompt"
           value={command.prompt}
           onChange={(e) => handleUpdate("prompt", e.target.value)}
-          placeholder="Enter command prompt"
+          placeholder={t("commandSettings.enterPrompt")}
           className="min-h-[200px]"
         />
         {errors.prompt && <div className="text-error text-sm">{errors.prompt}</div>}
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="modelKey">Model (Optional)</Label>
+        <Label htmlFor="modelKey">{t("commandSettings.modelOptional")}</Label>
         <div className="relative w-full group">
           <select
             value={command.modelKey}
@@ -132,7 +131,7 @@ function InlineEditCommandSettingsModalContent({
               "hover:bg-interactive-hover hover:text-normal"
             )}
           >
-            <option value="">Inherit from chat model</option>
+            <option value="">{t("commandSettings.inheritFromChatModel")}</option>
             {activeModels.map((option) => (
               <option key={option.value} value={option.value.toString()}>
                 {option.label}
@@ -156,15 +155,15 @@ function InlineEditCommandSettingsModalContent({
           checked={command.showInContextMenu}
           onCheckedChange={(checked) => handleUpdate("showInContextMenu", checked)}
         />
-        <Label htmlFor="showInContextMenu">Show in context menu</Label>
+        <Label htmlFor="showInContextMenu">{t("commandSettings.showInContextMenu")}</Label>
       </div>
 
       <div className="flex justify-end gap-2">
         <Button variant="secondary" onClick={onCancel}>
-          Cancel
+          {t("common.cancel")}
         </Button>
         <Button variant="default" onClick={handleSubmit}>
-          Save
+          {t("common.save")}
         </Button>
       </div>
     </div>
@@ -181,9 +180,14 @@ export class InlineEditCommandSettingsModal extends Modal {
     private onRemove?: () => void
   ) {
     super(app);
+
+    // 为了解决大标题问题，直接使用具体的标题文本而不是翻译键
+    const locale = (window as any).copilotLocale || "en";
+    const title = locale === "zh-CN" ? "编辑命令" : "Edit Command";
+
     // https://docs.obsidian.md/Reference/TypeScript+API/Modal/setTitle
     // @ts-ignore
-    this.setTitle("Edit Command");
+    this.setTitle(title);
   }
 
   onOpen() {

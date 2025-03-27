@@ -196,6 +196,28 @@
       "description": "When enabled, Copilot index won't be loaded on mobile devices to save resources. Only chat mode will be available. Any existing index from desktop sync will be preserved. Uncheck to enable QA modes on mobile."
     }
   },
+  "commandSettings": {
+    "title": "Custom Commands",
+    "description": "To trigger a custom command, highlight text in the editor and select it from the command palette, or right-click and choose it from the context menu if configured.",
+    "noModifiedCommandHint": "Take control of your inline edit commands! You can now create your own or edit built-in ones to tailor functionality to your needs.",
+    "nameColumn": "Name",
+    "inMenuColumn": "In Menu",
+    "edit": "Edit",
+    "copy": "Copy",
+    "copyLabel": "copy",
+    "delete": "Delete",
+    "addCommand": "Add Command",
+    "name": "Name",
+    "prompt": "Prompt",
+    "promptHelp": "Use <code>{\"copilot-selection\"}</code> as a placeholder for the selected text. If not included, the selected text will be appended to the prompt.",
+    "promptRequired": "Prompt is required",
+    "enterCommandName": "Enter command name",
+    "enterPrompt": "Enter command prompt",
+    "modelOptional": "Model (Optional)",
+    "inheritFromChatModel": "Inherit from chat model",
+    "showInContextMenu": "Show in context menu",
+    "editCommand": "Edit Command"
+  },
   "errors": {
     "emptyIndexError": "Copilot index does not exist. Please index your vault first!\n\n1. Set a working embedding model in QA settings. If it's not a local model, don't forget to set the API key. \n\n2. Click 'Refresh Index for Vault' and wait for indexing to complete. If you encounter the rate limiting error, please turn your request per second down in QA setting."
   }

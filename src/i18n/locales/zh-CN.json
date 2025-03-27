@@ -195,6 +195,28 @@
       "description": "启用后，Copilot索引将不会在移动设备上加载以节省资源。只有聊天模式可用。任何来自桌面同步的现有索引将被保留。取消选中以在移动设备上启用问答模式。"
     }
   },
+  "commandSettings": {
+    "title": "自定义命令",
+    "description": "要触发自定义命令，请在编辑器中高亮显示文本，然后从命令面板中选择它，或者如果已配置，右键单击并从上下文菜单中选择它。",
+    "noModifiedCommandHint": "掌控您的内联编辑命令！您现在可以创建自己的命令或编辑内置命令，以根据需求定制功能。",
+    "nameColumn": "名称",
+    "inMenuColumn": "在菜单中",
+    "edit": "编辑",
+    "copy": "复制",
+    "copyLabel": "副本",
+    "delete": "删除",
+    "addCommand": "添加命令",
+    "name": "名称",
+    "prompt": "提示词",
+    "promptHelp": "使用 <code>{\"copilot-selection\"}</code> 作为所选文本的占位符。如果未包含，所选文本将附加到提示词后面。",
+    "promptRequired": "提示词是必填项",
+    "enterCommandName": "输入命令名称",
+    "enterPrompt": "输入命令提示词",
+    "modelOptional": "模型（可选）",
+    "inheritFromChatModel": "继承自聊天模型",
+    "showInContextMenu": "在上下文菜单中显示",
+    "editCommand": "编辑命令"
+  },
   "errors": {
     "emptyIndexError": "Copilot 索引不存在。请先索引你的知识库！\n\n1. 在问答设置中设置一个可用的嵌入模型。如果不是本地模型，请确保设置API密钥。\n\n2. 点击'刷新知识库索引'并等待索引完成。如果遇到速率限制错误，请在问答设置中降低每秒请求数。"
   }
