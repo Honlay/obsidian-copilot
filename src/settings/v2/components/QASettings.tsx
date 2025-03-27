@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { SettingItem } from "@/components/ui/setting-item";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { VAULT_VECTOR_STORE_STRATEGIES } from "@/constants";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 import VectorStoreManager from "@/search/vectorStoreManager";
 import { updateSetting, useSettingsValue } from "@/settings/model";
 import { HelpCircle } from "lucide-react";
@@ -11,6 +12,7 @@ import React from "react";
 
 export const QASettings: React.FC = () => {
   const settings = useSettingsValue();
+  const { t } = useTranslation();
 
   const handlePartitionsChange = (value: string) => {
     const numValue = parseInt(value);
@@ -29,10 +31,12 @@ export const QASettings: React.FC = () => {
           {/* Auto-Index Strategy */}
           <SettingItem
             type="select"
-            title="Auto-Index Strategy"
+            title={t("qaSettings.autoIndexStrategy.title")}
             description={
               <div className="flex items-center gap-1.5">
-                <span className="leading-none">Decide when you want the vault to be indexed.</span>
+                <span className="leading-none">
+                  {t("qaSettings.autoIndexStrategy.description")}
+                </span>
                 <TooltipProvider delayDuration={0}>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -41,34 +45,42 @@ export const QASettings: React.FC = () => {
                     <TooltipContent>
                       <div className="space-y-2 py-2">
                         <div className="space-y-1">
-                          <div className="text-muted text-sm">Choose when to index your vault:</div>
+                          <div className="text-muted text-sm">
+                            {t("qaSettings.autoIndexStrategy.tooltipHeading")}
+                          </div>
                           <ul className="space-y-1 pl-2 list-disc text-sm">
                             <li>
                               <div className="flex items-center gap-1">
-                                <strong className="inline-block whitespace-nowrap">NEVER:</strong>
-                                <span>Manual indexing via command or refresh only</span>
+                                <strong className="inline-block whitespace-nowrap">
+                                  {t("qaSettings.autoIndexStrategy.never.title")}:
+                                </strong>
+                                <span>{t("qaSettings.autoIndexStrategy.never.description")}</span>
                               </div>
                             </li>
                             <li>
                               <div className="flex items-center gap-1">
                                 <strong className="inline-block whitespace-nowrap">
-                                  ON STARTUP:
+                                  {t("qaSettings.autoIndexStrategy.onStartup.title")}:
                                 </strong>
-                                <span>Index updates when plugin loads or reloads</span>
+                                <span>
+                                  {t("qaSettings.autoIndexStrategy.onStartup.description")}
+                                </span>
                               </div>
                             </li>
                             <li>
                               <div className="flex items-center gap-1">
                                 <strong className="inline-block whitespace-nowrap">
-                                  ON MODE SWITCH:
+                                  {t("qaSettings.autoIndexStrategy.onModeSwitch.title")}:
                                 </strong>
-                                <span>Updates when entering QA mode (Recommended)</span>
+                                <span>
+                                  {t("qaSettings.autoIndexStrategy.onModeSwitch.description")}
+                                </span>
                               </div>
                             </li>
                           </ul>
                         </div>
                         <p className="text-callout-warning text-sm">
-                          Warning: Cost implications for large vaults with paid models
+                          {t("qaSettings.autoIndexStrategy.warning")}
                         </p>
                       </div>
                     </TooltipContent>
@@ -84,14 +96,14 @@ export const QASettings: React.FC = () => {
               label: strategy,
               value: strategy,
             }))}
-            placeholder="Strategy"
+            placeholder={t("qaSettings.strategy")}
           />
 
           {/* Max Sources */}
           <SettingItem
             type="slider"
-            title="Max Sources"
-            description="Copilot goes through your vault to find relevant blocks and passes the top N blocks to the LLM. Default for N is 3. Increase if you want more sources included in the answer generation step."
+            title={t("qaSettings.maxSources.title")}
+            description={t("qaSettings.maxSources.description")}
             min={1}
             max={128}
             step={1}
@@ -102,8 +114,8 @@ export const QASettings: React.FC = () => {
           {/* Requests per Minute */}
           <SettingItem
             type="slider"
-            title="Requests per Minute"
-            description="Default is 90. Decrease if you are rate limited by your embedding provider."
+            title={t("qaSettings.requestsPerMinute.title")}
+            description={t("qaSettings.requestsPerMinute.description")}
             min={10}
             max={300}
             step={10}
@@ -114,8 +126,8 @@ export const QASettings: React.FC = () => {
           {/* Embedding batch size */}
           <SettingItem
             type="slider"
-            title="Embedding Batch Size"
-            description="Default is 16. Increase if you are rate limited by your embedding provider."
+            title={t("qaSettings.embeddingBatchSize.title")}
+            description={t("qaSettings.embeddingBatchSize.description")}
             min={1}
             max={128}
             step={1}
@@ -126,8 +138,8 @@ export const QASettings: React.FC = () => {
           {/* Number of Partitions */}
           <SettingItem
             type="select"
-            title="Number of Partitions"
-            description="Number of partitions for Copilot index. Default is 1. Increase if you have issues indexing large vaults. Warning: Changes require clearing and rebuilding the index!"
+            title={t("qaSettings.numPartitions.title")}
+            description={t("qaSettings.numPartitions.description")}
             value={settings.numPartitions.toString()}
             onChange={handlePartitionsChange}
             options={[
@@ -156,13 +168,10 @@ export const QASettings: React.FC = () => {
           {/* Exclusions */}
           <SettingItem
             type="custom"
-            title="Exclusions"
+            title={t("qaSettings.exclusions.title")}
             description={
               <>
-                <p>
-                  Exclude folders, tags, note titles or file extensions from being indexed.
-                  Previously indexed files will remain until a force re-index is performed.
-                </p>
+                <p>{t("qaSettings.exclusions.description")}</p>
               </>
             }
           >
@@ -173,25 +182,19 @@ export const QASettings: React.FC = () => {
                   app,
                   (value) => updateSetting("qaExclusions", value),
                   settings.qaExclusions,
-                  "Manage Exclusions"
+                  t("qaSettings.exclusions.manageTitle")
                 ).open()
               }
             >
-              Manage
+              {t("qaSettings.manage")}
             </Button>
           </SettingItem>
 
           {/* Inclusions */}
           <SettingItem
             type="custom"
-            title="Inclusions"
-            description={
-              <p>
-                Index only the specified paths, tags, or note titles. Exclusions take precedence
-                over inclusions. Previously indexed files will remain until a force re-index is
-                performed.
-              </p>
-            }
+            title={t("qaSettings.inclusions.title")}
+            description={<p>{t("qaSettings.inclusions.description")}</p>}
           >
             <Button
               variant="secondary"
@@ -200,19 +203,19 @@ export const QASettings: React.FC = () => {
                   app,
                   (value) => updateSetting("qaInclusions", value),
                   settings.qaInclusions,
-                  "Manage Inclusions"
+                  t("qaSettings.inclusions.manageTitle")
                 ).open()
               }
             >
-              Manage
+              {t("qaSettings.manage")}
             </Button>
           </SettingItem>
 
           {/* Enable Obsidian Sync */}
           <SettingItem
             type="switch"
-            title="Enable Obsidian Sync for Copilot index"
-            description="If enabled, the index will be stored in the .obsidian folder and synced with Obsidian Sync by default. If disabled, it will be stored in .copilot-index folder at vault root."
+            title={t("qaSettings.enableIndexSync.title")}
+            description={t("qaSettings.enableIndexSync.description")}
             checked={settings.enableIndexSync}
             onCheckedChange={(checked) => updateSetting("enableIndexSync", checked)}
           />
@@ -220,8 +223,8 @@ export const QASettings: React.FC = () => {
           {/* Disable index loading on mobile */}
           <SettingItem
             type="switch"
-            title="Disable index loading on mobile"
-            description="When enabled, Copilot index won't be loaded on mobile devices to save resources. Only chat mode will be available. Any existing index from desktop sync will be preserved. Uncheck to enable QA modes on mobile."
+            title={t("qaSettings.disableIndexOnMobile.title")}
+            description={t("qaSettings.disableIndexOnMobile.description")}
             checked={settings.disableIndexOnMobile}
             onCheckedChange={(checked) => updateSetting("disableIndexOnMobile", checked)}
           />
