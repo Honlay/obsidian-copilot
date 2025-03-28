@@ -77,7 +77,11 @@ const PROMPT_KEYS: Record<ChainType, Array<keyof ReturnType<typeof getSuggestedP
   [ChainType.COPILOT_PLUS_CHAIN]: ["copilotPlus", "copilotPlus", "copilotPlus"],
 };
 
-const localeService = LocaleService.getInstance();
+// 单例localeService，但我们需要确保组件在语言变化时重新渲染
+const getLocaleService = () => {
+  const service = LocaleService.getInstance();
+  return service;
+};
 
 function getRandomPrompt(chainType: ChainType = ChainType.LLM_CHAIN) {
   const SUGGESTED_PROMPTS = getSuggestedPrompts();
@@ -134,37 +138,23 @@ export const SuggestedPrompts: React.FC<SuggestedPromptsProps> = ({ onClick }) =
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener(LOCALE_CHANGE_EVENT as any, handleLocaleChange as any);
 
-    // 定期检查localStorage中的语言设置
-    const checkInterval = setInterval(() => {
-      try {
-        const storedLocale = localStorage.getItem("obsidian-copilot-locale");
-        if (
-          storedLocale &&
-          (storedLocale === "en" || storedLocale === "zh-CN") &&
-          storedLocale !== currentLocale
-        ) {
-          setCurrentLocale(storedLocale as Locale);
-        }
-      } catch (error) {
-        console.error("Error checking localStorage:", error);
-      }
-    }, 1000);
-
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener(LOCALE_CHANGE_EVENT as any, handleLocaleChange as any);
-      clearInterval(checkInterval);
     };
+  }, []);
+
+  // 每次语言变化时创建新的localeService实例
+  const localeService = useMemo(() => {
+    const service = getLocaleService();
+    service.setLocale(currentLocale);
+    return service;
   }, [currentLocale]);
 
-  const prompts = useMemo(() => getRandomPrompt(chainType), [chainType]);
+  const prompts = useMemo(() => getRandomPrompt(chainType), [chainType]); // 移除 currentLocale 依赖
+
   const settings = useSettingsValue();
   const indexVaultToVectorStore = settings.indexVaultToVectorStore as VAULT_VECTOR_STORE_STRATEGY;
-
-  // 设置当前语言
-  useEffect(() => {
-    localeService.setLocale(currentLocale);
-  }, [currentLocale]);
 
   return (
     <div className="flex flex-col gap-4">

@@ -18,6 +18,8 @@ import { ChevronDown } from "lucide-react";
 import { logError } from "@/logger";
 import { useTranslation } from "@/i18n/hooks/useTranslation";
 import { LOCALE_CHANGE_EVENT } from "@/i18n/components/LanguageSelector";
+import { Locale } from "@/i18n/config";
+import LocaleService from "@/i18n/LocaleService";
 
 type FormErrors = {
   name?: string;
@@ -176,6 +178,7 @@ export class InlineEditCommandSettingsModal extends Modal {
   private locale: string = "en";
   private localeChangeHandler: (e: StorageEvent) => void;
   private customLocaleChangeHandler: (e: CustomEvent<{ locale: string }>) => void;
+  private localeService: LocaleService;
 
   constructor(
     app: App,
@@ -195,6 +198,10 @@ export class InlineEditCommandSettingsModal extends Modal {
       console.error("Error accessing localStorage:", error);
     }
 
+    // 获取LocaleService实例并设置当前语言
+    this.localeService = LocaleService.getInstance();
+    this.localeService.setLocale(this.locale as Locale);
+
     this.updateTitle();
 
     // 初始化事件处理器
@@ -202,6 +209,7 @@ export class InlineEditCommandSettingsModal extends Modal {
       if (e.key === "obsidian-copilot-locale" && e.newValue) {
         if (e.newValue === "en" || e.newValue === "zh-CN") {
           this.locale = e.newValue;
+          this.localeService.setLocale(this.locale as Locale);
           this.updateTitle();
         }
       }
@@ -209,6 +217,7 @@ export class InlineEditCommandSettingsModal extends Modal {
 
     this.customLocaleChangeHandler = (e: CustomEvent<{ locale: string }>) => {
       this.locale = e.detail.locale;
+      this.localeService.setLocale(this.locale as Locale);
       this.updateTitle();
     };
   }
@@ -253,7 +262,8 @@ export class InlineEditCommandSettingsModal extends Modal {
   }
 
   private updateTitle() {
-    const title = this.locale === "zh-CN" ? "编辑命令" : "Edit Command";
+    // 使用localeService获取翻译
+    const title = this.localeService.getTranslation("commandSettings.editCommand");
     // @ts-ignore
     this.setTitle(title);
   }

@@ -269,14 +269,15 @@
     "addCommand": "添加命令",
     "name": "名称",
     "prompt": "提示词",
-    "promxuaptHelp": "使用 <code>{\"copilot-selection\"}</code> 作为所选文本的占位符。如果未包含，所选文本将附加到提示词后面。",
+    "promptHelp": "使用 <code>{\"copilot-selection\"}</code> 作为所选文本的占位符。如果未包含，所选文本将附加到提示词后面。",
     "promptRequired": "提示词是必填项",
     "enterCommandName": "输入命令名称",
     "enterPrompt": "输入命令提示词",
     "modelOptional": "模型（可选）",
     "inheritFromChatModel": "继承自聊天模型",
     "showInContextMenu": "在上下文菜单中显示",
-    "editCommand": "编辑命令"
+    "editCommand": "编辑命令",
+    "selectionPlaceholderHelp": "使用 <code>{\"copilot-selection\"}</code> 作为所选文本的占位符。如果未包含，所选文本将附加到提示词后面。"
   },
   "advancedSettings": {
     "userSystemPrompt": {
