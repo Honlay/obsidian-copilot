@@ -46,8 +46,8 @@
     "generating": "生成中...",
     "modelLoadFailed": "模型加载失败",
     "mode": {
-      "chat": "聊天",
-      "vault": "知识库"
+      "chat": "chat",
+      "vault": "vault"
     },
     "noMessagesToSave": "没有可保存的消息。",
     "timestamp": "时间戳",
@@ -359,5 +359,13 @@
   },
   "errors": {
     "emptyIndexError": "Copilot 索引不存在。请先索引你的知识库！\n\n1. 在问答设置中设置一个可用的嵌入模型。如果不是本地模型，请确保设置API密钥。\n\n2. 点击'刷新知识库索引'并等待索引完成。如果遇到速率限制错误，请在问答设置中降低每秒请求数。"
+  },
+  "chatButtons": {
+    "copy": "复制",
+    "edit": "编辑",
+    "delete": "删除",
+    "showSources": "显示来源",
+    "insertAtCursor": "在光标处插入/替换",
+    "regenerate": "重新生成"
   }
 }

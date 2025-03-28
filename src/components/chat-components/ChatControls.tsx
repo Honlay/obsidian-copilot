@@ -21,6 +21,7 @@ import { Notice } from "obsidian";
 import VectorStoreManager from "@/search/vectorStoreManager";
 import { navigateToPlusPage, useIsPlusUser } from "@/plusUtils";
 import { PLUS_UTM_MEDIUMS } from "@/constants";
+import { useTranslation } from "@/i18n/hooks/useTranslation";
 
 export async function refreshVaultIndex() {
   try {
@@ -41,6 +42,7 @@ export function ChatControls({ onNewChat, onSaveAsNote }: ChatControlsProps) {
   const settings = useSettingsValue();
   const [selectedChain, setSelectedChain] = useChainType();
   const isPlusUser = useIsPlusUser();
+  const { t } = useTranslation();
 
   return (
     <div className="w-full py-1 flex justify-between items-center px-1">
@@ -48,8 +50,8 @@ export function ChatControls({ onNewChat, onSaveAsNote }: ChatControlsProps) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost2" size="fit" className="ml-1">
-              {selectedChain === ChainType.LLM_CHAIN && "chat"}
-              {selectedChain === ChainType.VAULT_QA_CHAIN && "vault QA"}
+              {selectedChain === ChainType.LLM_CHAIN && t("chat.mode.chat")}
+              {selectedChain === ChainType.VAULT_QA_CHAIN && t("chat.mode.vault")}
               {selectedChain === ChainType.COPILOT_PLUS_CHAIN && (
                 <div className="flex items-center gap-1">
                   <Sparkles className="size-4" />
@@ -61,10 +63,10 @@ export function ChatControls({ onNewChat, onSaveAsNote }: ChatControlsProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
             <DropdownMenuItem onSelect={() => setSelectedChain(ChainType.LLM_CHAIN)}>
-              chat
+              {t("chat.mode.chat")}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => setSelectedChain(ChainType.VAULT_QA_CHAIN)}>
-              vault QA
+              {t("chat.mode.vault")}
             </DropdownMenuItem>
             {isPlusUser ? (
               <DropdownMenuItem onSelect={() => setSelectedChain(ChainType.COPILOT_PLUS_CHAIN)}>
@@ -89,24 +91,24 @@ export function ChatControls({ onNewChat, onSaveAsNote }: ChatControlsProps) {
       <div>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost2" size="icon" title="New Chat" onClick={onNewChat}>
+            <Button variant="ghost2" size="icon" title={t("chat.newChat")} onClick={onNewChat}>
               <MessageCirclePlus className="size-4" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>New Chat</TooltipContent>
+          <TooltipContent>{t("chat.newChat")}</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost2" size="icon" title="Save Chat as Note" onClick={onSaveAsNote}>
+            <Button variant="ghost2" size="icon" title={t("chat.saveChat")} onClick={onSaveAsNote}>
               <Download className="size-4" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Save Chat as Note</TooltipContent>
+          <TooltipContent>{t("chat.saveChat")}</TooltipContent>
         </Tooltip>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost2" size="icon" title="Advanced Settings">
+            <Button variant="ghost2" size="icon" title={t("settings.title")}>
               <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -120,7 +122,7 @@ export function ChatControls({ onNewChat, onSaveAsNote }: ChatControlsProps) {
             >
               <div className="flex items-center gap-2">
                 <Sparkles className="size-4" />
-                Suggested Prompt
+                {t("settings.suggestedPrompts")}
               </div>
               <SettingSwitch checked={settings.showSuggestedPrompts} />
             </DropdownMenuItem>
@@ -133,7 +135,7 @@ export function ChatControls({ onNewChat, onSaveAsNote }: ChatControlsProps) {
             >
               <div className="flex items-center gap-2">
                 <FileText className="size-4" />
-                Relevant Note
+                {t("settings.relevantNotes")}
               </div>
               <SettingSwitch checked={settings.showRelevantNotes} />
             </DropdownMenuItem>
@@ -142,7 +144,7 @@ export function ChatControls({ onNewChat, onSaveAsNote }: ChatControlsProps) {
               onSelect={() => refreshVaultIndex()}
             >
               <RefreshCw className="size-4" />
-              Refresh Vault Index
+              {t("suggestedPrompts.refreshIndex")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -360,5 +360,13 @@
   },
   "errors": {
     "emptyIndexError": "Copilot index does not exist. Please index your vault first!\n\n1. Set a working embedding model in QA settings. If it's not a local model, don't forget to set the API key. \n\n2. Click 'Refresh Index for Vault' and wait for indexing to complete. If you encounter the rate limiting error, please turn your request per second down in QA setting."
+  },
+  "chatButtons": {
+    "copy": "Copy",
+    "edit": "Edit",
+    "delete": "Delete",
+    "showSources": "Show Sources",
+    "insertAtCursor": "Insert / Replace at cursor",
+    "regenerate": "Regenerate"
   }
 }
