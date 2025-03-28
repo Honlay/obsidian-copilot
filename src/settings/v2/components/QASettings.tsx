@@ -7,12 +7,15 @@ import { VAULT_VECTOR_STORE_STRATEGIES, VAULT_VECTOR_STORE_STRATEGY } from "@/co
 import VectorStoreManager from "@/search/vectorStoreManager";
 import { updateSetting, useSettingsValue } from "@/settings/model";
 import { HelpCircle } from "lucide-react";
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import LocaleService from "@/i18n/LocaleService";
+import { Locale } from "@/i18n/config";
+import { LOCALE_CHANGE_EVENT } from "@/i18n/components/LanguageSelector";
 
-const localeService = LocaleService.getInstance();
+const getTranslatedStrategy = (strategy: VAULT_VECTOR_STORE_STRATEGY, locale: string): string => {
+  const localeService = LocaleService.getInstance();
+  localeService.setLocale(locale as Locale);
 
-const getTranslatedStrategy = (strategy: VAULT_VECTOR_STORE_STRATEGY): string => {
   const translations: Record<VAULT_VECTOR_STORE_STRATEGY, string> = {
     [VAULT_VECTOR_STORE_STRATEGY.NEVER]: localeService.getTranslation("vectorStoreStrategy.never"),
     [VAULT_VECTOR_STORE_STRATEGY.ON_STARTUP]: localeService.getTranslation(
@@ -27,14 +30,56 @@ const getTranslatedStrategy = (strategy: VAULT_VECTOR_STORE_STRATEGY): string =>
 
 export const QASettings: React.FC = () => {
   const settings = useSettingsValue();
+  const [currentLocale, setCurrentLocale] = useState<string>(() => {
+    try {
+      const storedLocale = localStorage.getItem("obsidian-copilot-locale");
+      return storedLocale && (storedLocale === "en" || storedLocale === "zh-CN")
+        ? storedLocale
+        : "en";
+    } catch (error) {
+      console.error("Error accessing localStorage:", error);
+      return "en";
+    }
+  });
+
+  // 监听localStorage变化以更新语言
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "obsidian-copilot-locale" && e.newValue) {
+        if (e.newValue === "en" || e.newValue === "zh-CN") {
+          setCurrentLocale(e.newValue);
+        }
+      }
+    };
+
+    // 监听语言选择器触发的自定义事件
+    const handleLocaleChange = (e: CustomEvent<{ locale: string }>) => {
+      setCurrentLocale(e.detail.locale);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener(LOCALE_CHANGE_EVENT as any, handleLocaleChange as any);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener(LOCALE_CHANGE_EVENT as any, handleLocaleChange as any);
+    };
+  }, []);
+
+  // 初始化 LocaleService
+  const localeService = useMemo(() => {
+    const service = LocaleService.getInstance();
+    service.setLocale(currentLocale as Locale);
+    return service;
+  }, [currentLocale]);
 
   const strategyOptions = useMemo(
     () =>
       VAULT_VECTOR_STORE_STRATEGIES.map((strategy) => ({
-        label: getTranslatedStrategy(strategy),
+        label: getTranslatedStrategy(strategy, currentLocale),
         value: strategy,
       })),
-    []
+    [currentLocale]
   );
 
   const handlePartitionsChange = (value: string) => {
