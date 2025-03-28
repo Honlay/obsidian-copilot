@@ -157,7 +157,10 @@
       "title": "Capabilities",
       "reasoning": "This model supports general reasoning tasks.",
       "vision": "This model supports image inputs.",
-      "websearch": "This model can access the internet."
+      "websearch": "This model can access the internet.",
+      "reasoningLabel": "Reasoning",
+      "visionLabel": "Vision",
+      "websearchLabel": "Websearch"
     }
   },
   "qaSettings": {

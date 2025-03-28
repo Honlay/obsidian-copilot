@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useTab } from "@/contexts/TabContext";
 import { getSettings } from "@/settings/model";
 import {
@@ -37,6 +37,9 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { FormField } from "@/components/ui/form-field";
+import LocaleService from "@/i18n/LocaleService";
+import { Locale } from "@/i18n/config";
+import { LOCALE_CHANGE_EVENT } from "@/i18n/components/LanguageSelector";
 
 interface FormErrors {
   name: boolean;
@@ -67,6 +70,49 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
   const defaultProvider = isEmbeddingModel
     ? EmbeddingModelProviders.OPENAI
     : ChatModelProviders.OPENAI;
+
+  // 添加国际化支持
+  const [currentLocale, setCurrentLocale] = useState<string>(() => {
+    try {
+      const storedLocale = localStorage.getItem("obsidian-copilot-locale");
+      return storedLocale && (storedLocale === "en" || storedLocale === "zh-CN")
+        ? storedLocale
+        : "en";
+    } catch (error) {
+      console.error("Error accessing localStorage:", error);
+      return "en";
+    }
+  });
+
+  // 监听语言变化
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "obsidian-copilot-locale" && e.newValue) {
+        if (e.newValue === "en" || e.newValue === "zh-CN") {
+          setCurrentLocale(e.newValue);
+        }
+      }
+    };
+
+    const handleLocaleChange = (e: CustomEvent<{ locale: string }>) => {
+      setCurrentLocale(e.detail.locale);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener(LOCALE_CHANGE_EVENT as any, handleLocaleChange as any);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener(LOCALE_CHANGE_EVENT as any, handleLocaleChange as any);
+    };
+  }, []);
+
+  // 初始化 LocaleService
+  const localeService = useMemo(() => {
+    const service = LocaleService.getInstance();
+    service.setLocale(currentLocale as Locale);
+    return service;
+  }, [currentLocale]);
 
   const [dialogElement, setDialogElement] = useState<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -185,7 +231,7 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
 
   const handleAdd = () => {
     if (!validateFields()) {
-      new Notice("Please fill in all required fields");
+      new Notice(localeService.getTranslation("modelSettings.fillRequiredFields"));
       return;
     }
 
@@ -224,7 +270,7 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
 
   const handleVerify = async () => {
     if (!validateFields()) {
-      new Notice("Please fill in all required fields");
+      new Notice(localeService.getTranslation("modelSettings.fillRequiredFields"));
       return;
     }
 
@@ -232,11 +278,11 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
     try {
       const cleanedModel = getCleanedModel(model);
       await ping(cleanedModel);
-      new Notice("Model verification successful!");
+      new Notice(localeService.getTranslation("modelSettings.verificationSuccess"));
     } catch (err) {
       console.error(err);
       const errStr = err2String(err);
-      new Notice("Model verification failed: " + errStr);
+      new Notice(localeService.getTranslation("modelSettings.verificationFailed") + ": " + errStr);
     } finally {
       setIsVerifying(false);
     }
@@ -248,12 +294,14 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
         case ChatModelProviders.OPENAI:
           return (
             <FormField
-              label="OpenAI Organization ID"
-              description="Enter OpenAI Organization ID if applicable"
+              label={localeService.getTranslation("modelSettings.openAIOrgId")}
+              description={localeService.getTranslation("modelSettings.openAIOrgIdDescription")}
             >
               <Input
                 type="text"
-                placeholder="Enter OpenAI Organization ID if applicable"
+                placeholder={localeService.getTranslation(
+                  "modelSettings.enterOpenAIOrgIdPlaceholder"
+                )}
                 value={model.openAIOrgId || ""}
                 onChange={(e) => setModel({ ...model, openAIOrgId: e.target.value })}
               />
@@ -263,14 +311,14 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
           return (
             <>
               <FormField
-                label="Instance Name"
+                label={localeService.getTranslation("modelSettings.instanceName")}
                 required
                 error={errors.instanceName}
-                errorMessage="Instance name is required"
+                errorMessage={localeService.getTranslation("modelSettings.instanceNameRequired")}
               >
                 <Input
                   type="text"
-                  placeholder="Enter Azure OpenAI API Instance Name"
+                  placeholder={localeService.getTranslation("modelSettings.enterAzureInstanceName")}
                   value={model.azureOpenAIApiInstanceName || ""}
                   onChange={(e) => {
                     setModel({ ...model, azureOpenAIApiInstanceName: e.target.value });
@@ -281,15 +329,21 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
 
               {!isEmbeddingModel ? (
                 <FormField
-                  label="Deployment Name"
+                  label={localeService.getTranslation("modelSettings.deploymentName")}
                   required
                   error={errors.deploymentName}
-                  errorMessage="Deployment name is required"
-                  description="This is your actual model, no need to pass a model name separately."
+                  errorMessage={localeService.getTranslation(
+                    "modelSettings.deploymentNameRequired"
+                  )}
+                  description={localeService.getTranslation(
+                    "modelSettings.deploymentNameDescription"
+                  )}
                 >
                   <Input
                     type="text"
-                    placeholder="Enter Azure OpenAI API Deployment Name"
+                    placeholder={localeService.getTranslation(
+                      "modelSettings.enterAzureDeploymentName"
+                    )}
                     value={model.azureOpenAIApiDeploymentName || ""}
                     onChange={(e) => {
                       setModel({ ...model, azureOpenAIApiDeploymentName: e.target.value });
@@ -299,14 +353,18 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
                 </FormField>
               ) : (
                 <FormField
-                  label="Embedding Deployment Name"
+                  label={localeService.getTranslation("modelSettings.embeddingDeploymentName")}
                   required
                   error={errors.embeddingDeploymentName}
-                  errorMessage="Embedding deployment name is required"
+                  errorMessage={localeService.getTranslation(
+                    "modelSettings.embeddingDeploymentNameRequired"
+                  )}
                 >
                   <Input
                     type="text"
-                    placeholder="Enter Azure OpenAI API Embedding Deployment Name"
+                    placeholder={localeService.getTranslation(
+                      "modelSettings.enterAzureEmbeddingDeploymentName"
+                    )}
                     value={model.azureOpenAIApiEmbeddingDeploymentName || ""}
                     onChange={(e) => {
                       setModel({ ...model, azureOpenAIApiEmbeddingDeploymentName: e.target.value });
@@ -317,14 +375,14 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
               )}
 
               <FormField
-                label="API Version"
+                label={localeService.getTranslation("modelSettings.apiVersion")}
                 required
                 error={errors.apiVersion}
-                errorMessage="API version is required"
+                errorMessage={localeService.getTranslation("modelSettings.apiVersionRequired")}
               >
                 <Input
                   type="text"
-                  placeholder="Enter Azure OpenAI API Version"
+                  placeholder={localeService.getTranslation("modelSettings.enterAzureApiVersion")}
                   value={model.azureOpenAIApiVersion || ""}
                   onChange={(e) => {
                     setModel({ ...model, azureOpenAIApiVersion: e.target.value });
@@ -349,7 +407,11 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
         className="space-y-2 border rounded-lg pt-4"
       >
         <div className="flex items-center justify-between">
-          <Label>Additional {getProviderLabel(model.provider)} Settings</Label>
+          <Label>
+            {localeService
+              .getTranslation("modelSettings.additionalProviderSettings")
+              .replace("{provider}", getProviderLabel(model.provider))}
+          </Label>
           <CollapsibleTrigger asChild>
             <Button variant="ghost" size="sm" className="w-9 p-0">
               <ChevronDown className="h-4 w-4" />
@@ -381,8 +443,10 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
 
   const capabilityOptions = Object.entries(MODEL_CAPABILITIES).map(([id, description]) => ({
     id,
-    label: id.charAt(0).toUpperCase() + id.slice(1),
-    description,
+    label:
+      localeService.getTranslation(`modelSettings.capabilities.${id}Label`) ||
+      id.charAt(0).toUpperCase() + id.slice(1),
+    description: localeService.getTranslation(`modelSettings.capabilities.${id}`),
   })) as Array<{ id: ModelCapability; label: string; description: string }>;
 
   return (
@@ -393,20 +457,26 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
         ref={(el) => setDialogElement(el)}
       >
         <DialogHeader>
-          <DialogTitle>Add Custom {isEmbeddingModel ? "Embedding" : "Chat"} Model</DialogTitle>
-          <DialogDescription>Add a new model to your collection.</DialogDescription>
+          <DialogTitle>
+            {isEmbeddingModel
+              ? localeService.getTranslation("modelSettings.addCustomEmbeddingModel")
+              : localeService.getTranslation("modelSettings.addCustomModel")}
+          </DialogTitle>
+          <DialogDescription>
+            {localeService.getTranslation("modelSettings.addModelDescription")}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3">
           <FormField
-            label="Model Name"
+            label={localeService.getTranslation("modelSettings.modelName")}
             required
             error={errors.name}
-            errorMessage="Model name is required"
+            errorMessage={localeService.getTranslation("modelSettings.modelNameRequired")}
           >
             <Input
               type="text"
-              placeholder={`Enter model name (e.g. ${
+              placeholder={`${localeService.getTranslation("modelSettings.enterModelName")} (${
                 isEmbeddingModel ? "text-embedding-3-small" : "gpt-4"
               })`}
               value={model.name}
@@ -420,7 +490,9 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
           <FormField
             label={
               <div className="flex items-center gap-1.5">
-                <span className="leading-none">Display Name</span>
+                <span className="leading-none">
+                  {localeService.getTranslation("modelSettings.displayName")}
+                </span>
                 <TooltipProvider delayDuration={0}>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -428,10 +500,12 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
                     </TooltipTrigger>
                     <TooltipContent align="start" className="max-w-96" side="bottom">
                       <div className="text-sm text-muted flex flex-col gap-0.5">
-                        <div className="text-[12px] font-bold">Suggested format:</div>
+                        <div className="text-[12px] font-bold">
+                          {localeService.getTranslation("modelSettings.suggestedFormat")}:
+                        </div>
                         <div className="text-accent">[Source]-[Payment]:[Pretty Model Name]</div>
                         <div className="text-[12px]">
-                          Example:
+                          {localeService.getTranslation("modelSettings.example")}:
                           <li>Direct-Paid:Ds-r1</li>
                           <li>OpenRouter-Paid:Ds-r1</li>
                           <li>Perplexity-Paid:lg</li>
@@ -445,7 +519,9 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
           >
             <Input
               type="text"
-              placeholder="Custom display name (optional)"
+              placeholder={localeService.getTranslation(
+                "modelSettings.customDisplayNamePlaceholder"
+              )}
               value={model.displayName || ""}
               onChange={(e) => {
                 setModel({ ...model, displayName: e.target.value });
@@ -453,10 +529,12 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
             />
           </FormField>
 
-          <FormField label="Provider">
+          <FormField label={localeService.getTranslation("modelSettings.provider")}>
             <Select value={model.provider} onValueChange={handleProviderChange}>
               <SelectTrigger>
-                <SelectValue placeholder="Select provider" />
+                <SelectValue
+                  placeholder={localeService.getTranslation("modelSettings.selectProvider")}
+                />
               </SelectTrigger>
               <SelectContent container={dialogElement}>
                 {Object.values(
@@ -472,7 +550,10 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
             </Select>
           </FormField>
 
-          <FormField label="Base URL" description="Leave it blank, unless you are using a proxy.">
+          <FormField
+            label={localeService.getTranslation("modelSettings.baseUrl")}
+            description={localeService.getTranslation("modelSettings.baseUrlDescription")}
+          >
             <Input
               type="text"
               placeholder={getPlaceholderUrl() || "https://api.example.com/v1"}
@@ -481,22 +562,23 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
             />
           </FormField>
 
-          <FormField label="API Key">
+          <FormField label={localeService.getTranslation("modelSettings.apiKey")}>
             <PasswordInput
-              placeholder={`Enter ${providerInfo.label} API Key`}
+              placeholder={`${localeService.getTranslation("modelSettings.enter")} ${providerInfo.label} ${localeService.getTranslation("modelSettings.apiKey")}`}
               value={model.apiKey || ""}
               onChange={(value) => setModel({ ...model, apiKey: value })}
             />
             {providerInfo.keyManagementURL && (
               <p className="text-xs text-muted">
                 <a href={providerInfo.keyManagementURL} target="_blank" rel="noopener noreferrer">
-                  Get {providerInfo.label} API Key
+                  {localeService.getTranslation("modelSettings.get")} {providerInfo.label}{" "}
+                  {localeService.getTranslation("modelSettings.apiKey")}
                 </a>
               </p>
             )}
           </FormField>
 
-          <FormField label="Model Capabilities">
+          <FormField label={localeService.getTranslation("modelSettings.capabilities.title")}>
             <div className="flex gap-4 items-center">
               {capabilityOptions.map(({ id, label, description }) => (
                 <div key={id} className="flex items-center gap-2">
@@ -539,21 +621,21 @@ export const ModelAddDialog: React.FC<ModelAddDialogProps> = ({
               onCheckedChange={(checked: boolean) => setModel({ ...model, enableCors: checked })}
             />
             <Label htmlFor="enable-cors" className="text-sm">
-              Enable CORS
+              {localeService.getTranslation("modelSettings.enableCors")}
             </Label>
           </div>
           <div className="flex gap-2">
             <Button variant="secondary" onClick={handleAdd} disabled={isButtonDisabled()}>
-              Add Model
+              {localeService.getTranslation("modelSettings.addModel")}
             </Button>
             <Button variant="secondary" onClick={handleVerify} disabled={isButtonDisabled()}>
               {isVerifying ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Verify
+                  {localeService.getTranslation("modelSettings.verify")}
                 </>
               ) : (
-                "Verify"
+                localeService.getTranslation("modelSettings.verify")
               )}
             </Button>
           </div>
