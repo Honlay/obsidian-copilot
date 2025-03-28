@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { logError } from "@/logger";
 import { useTranslation } from "@/i18n/hooks/useTranslation";
+import { LOCALE_CHANGE_EVENT } from "@/i18n/components/LanguageSelector";
 
 type FormErrors = {
   name?: string;
@@ -171,7 +172,10 @@ function InlineEditCommandSettingsModalContent({
 }
 
 export class InlineEditCommandSettingsModal extends Modal {
-  private root: Root;
+  private root: Root | null = null;
+  private locale: string = "en";
+  private localeChangeHandler: (e: StorageEvent) => void;
+  private customLocaleChangeHandler: (e: CustomEvent<{ locale: string }>) => void;
 
   constructor(
     app: App,
@@ -181,18 +185,41 @@ export class InlineEditCommandSettingsModal extends Modal {
   ) {
     super(app);
 
-    // 为了解决大标题问题，直接使用具体的标题文本而不是翻译键
-    const locale = (window as any).copilotLocale || "en";
-    const title = locale === "zh-CN" ? "编辑命令" : "Edit Command";
+    // 初始化语言设置
+    try {
+      const storedLocale = localStorage.getItem("obsidian-copilot-locale");
+      if (storedLocale && (storedLocale === "en" || storedLocale === "zh-CN")) {
+        this.locale = storedLocale;
+      }
+    } catch (error) {
+      console.error("Error accessing localStorage:", error);
+    }
 
-    // https://docs.obsidian.md/Reference/TypeScript+API/Modal/setTitle
-    // @ts-ignore
-    this.setTitle(title);
+    this.updateTitle();
+
+    // 初始化事件处理器
+    this.localeChangeHandler = (e: StorageEvent) => {
+      if (e.key === "obsidian-copilot-locale" && e.newValue) {
+        if (e.newValue === "en" || e.newValue === "zh-CN") {
+          this.locale = e.newValue;
+          this.updateTitle();
+        }
+      }
+    };
+
+    this.customLocaleChangeHandler = (e: CustomEvent<{ locale: string }>) => {
+      this.locale = e.detail.locale;
+      this.updateTitle();
+    };
   }
 
   onOpen() {
     const { contentEl } = this;
     this.root = createRoot(contentEl);
+
+    // 添加事件监听器
+    window.addEventListener("storage", this.localeChangeHandler);
+    window.addEventListener(LOCALE_CHANGE_EVENT as any, this.customLocaleChangeHandler as any);
 
     const handleConfirm = (command: InlineEditCommandSettings) => {
       this.onUpdate(command);
@@ -215,6 +242,19 @@ export class InlineEditCommandSettingsModal extends Modal {
   }
 
   onClose() {
-    this.root.unmount();
+    // 移除事件监听器
+    window.removeEventListener("storage", this.localeChangeHandler);
+    window.removeEventListener(LOCALE_CHANGE_EVENT as any, this.customLocaleChangeHandler as any);
+
+    if (this.root) {
+      this.root.unmount();
+      this.root = null;
+    }
+  }
+
+  private updateTitle() {
+    const title = this.locale === "zh-CN" ? "编辑命令" : "Edit Command";
+    // @ts-ignore
+    this.setTitle(title);
   }
 }
