@@ -1,6 +1,6 @@
 # 🔍 Copilot for Obsidian (中文版)
 
-这是 [obsidian-copilot](https://github.com/logancyang/obsidian-copilot) 的一个分支版本，添加了完整的中文界面支持。
+这是 [obsidian-copilot](https://github.com/logancyang/obsidian-copilot) 的一个分支版本，添加了完整的中文界面支持。本仓库地址：[obsidian-copilot-chinese](https://github.com/Honlay/obsidian-copilot-chinese)
 
 ## 🌟 主要特点
 

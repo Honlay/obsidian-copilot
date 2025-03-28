@@ -1,6 +1,6 @@
 {
-  "id": "copilot",
-  "name": "Copilot",
+  "id": "copilot-chinese",
+  "name": "Copilot Chinese",
   "version": "2.8.8",
   "minAppVersion": "0.15.0",
   "description": "An AI Copilot in Obsidian.",
