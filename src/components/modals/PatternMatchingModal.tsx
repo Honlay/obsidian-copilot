@@ -20,6 +20,7 @@ import { FolderSearchModal } from "@/components/modals/FolderSearchModal";
 import { ExtensionInputModal } from "@/components/modals/ExtensionInputModal";
 import { CustomPatternInputModal } from "@/components/modals/CustomPatternInputModal";
 import { TruncatedText } from "@/components/TruncatedText";
+import LocaleService from "@/i18n/LocaleService";
 
 function PatternListGroup({
   title,
@@ -30,9 +31,12 @@ function PatternListGroup({
   patterns: string[];
   onRemove: (pattern: string) => void;
 }) {
+  const localeService = LocaleService.getInstance();
   return (
     <div className="grid grid-cols-4 gap-2">
-      <div className="font-bold">{title}</div>
+      <div className="font-bold">
+        {localeService.getTranslation(`patternMatching.categories.${title.toLowerCase()}`)}
+      </div>
       <ul className="list-disc list-inside pl-0 m-0 col-span-3 flex flex-col gap-1">
         {patterns.map((pattern) => (
           <li key={pattern} className="flex gap-2 hover:bg-dropdown-hover pl-2 pr-1 rounded-md">
@@ -87,11 +91,13 @@ function PatternMatchingModalContent({
     <div className="flex flex-col gap-4 mt-2">
       <div className="flex flex-col gap-2 p-4 border border-border border-solid rounded-md max-h-[400px] overflow-y-auto">
         {!hasValue && (
-          <div className="text-center text-sm text-muted-foreground">No patterns specified</div>
+          <div className="text-center text-sm text-muted-foreground">
+            {LocaleService.getInstance().getTranslation("patternMatching.noPatterns")}
+          </div>
         )}
         {tagPatterns.length > 0 && (
           <PatternListGroup
-            title="Tags"
+            title="tags"
             patterns={tagPatterns}
             onRemove={(pattern) => {
               const newPatterns = tagPatterns.filter((p) => p !== pattern);
@@ -103,7 +109,7 @@ function PatternMatchingModalContent({
         )}
         {extensionPatterns.length > 0 && (
           <PatternListGroup
-            title="Extensions"
+            title="extensions"
             patterns={extensionPatterns}
             onRemove={(pattern) => {
               const newPatterns = extensionPatterns.filter((p) => p !== pattern);
@@ -115,7 +121,7 @@ function PatternMatchingModalContent({
         )}
         {folderPatterns.length > 0 && (
           <PatternListGroup
-            title="Folders"
+            title="folders"
             patterns={folderPatterns}
             onRemove={(pattern) => {
               const newPatterns = folderPatterns.filter((p) => p !== pattern);
@@ -127,7 +133,7 @@ function PatternMatchingModalContent({
         )}
         {notePatterns.length > 0 && (
           <PatternListGroup
-            title="Notes"
+            title="notes"
             patterns={notePatterns}
             onRemove={(pattern) => {
               const newPatterns = notePatterns.filter((p) => p !== pattern);
@@ -141,7 +147,9 @@ function PatternMatchingModalContent({
       <div className="flex justify-end gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="secondary">Add...</Button>
+            <Button variant="secondary">
+              {LocaleService.getInstance().getTranslation("patternMatching.addButton")}
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" container={container}>
             <DropdownMenuItem
@@ -159,7 +167,7 @@ function PatternMatchingModalContent({
             >
               <div className="flex items-center gap-2">
                 <Tag className="size-4" />
-                Tag
+                {LocaleService.getInstance().getTranslation("patternMatching.menuItems.tag")}
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -176,7 +184,7 @@ function PatternMatchingModalContent({
             >
               <div className="flex items-center gap-2">
                 <Folder className="size-4" />
-                Folder
+                {LocaleService.getInstance().getTranslation("patternMatching.menuItems.folder")}
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -199,7 +207,7 @@ function PatternMatchingModalContent({
             >
               <div className="flex items-center gap-2">
                 <FileText className="size-4" />
-                Note
+                {LocaleService.getInstance().getTranslation("patternMatching.menuItems.note")}
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -217,7 +225,7 @@ function PatternMatchingModalContent({
             >
               <div className="flex items-center gap-2">
                 <File className="size-4" />
-                Extension
+                {LocaleService.getInstance().getTranslation("patternMatching.menuItems.extension")}
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -241,7 +249,7 @@ function PatternMatchingModalContent({
             >
               <div className="flex items-center gap-2">
                 <Wrench className="size-4" />
-                Custom
+                {LocaleService.getInstance().getTranslation("patternMatching.menuItems.custom")}
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>

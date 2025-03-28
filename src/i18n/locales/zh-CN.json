@@ -409,5 +409,22 @@
     "showSources": "显示来源",
     "insertAtCursor": "在光标处插入/替换",
     "regenerate": "重新生成"
+  },
+  "patternMatching": {
+    "noPatterns": "未指定任何模式",
+    "categories": {
+      "tags": "标签",
+      "extensions": "扩展名",
+      "folders": "文件夹",
+      "notes": "笔记"
+    },
+    "addButton": "添加...",
+    "menuItems": {
+      "tag": "标签",
+      "folder": "文件夹",
+      "note": "笔记",
+      "extension": "扩展名",
+      "custom": "自定义"
+    }
   }
 }

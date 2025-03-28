@@ -371,5 +371,22 @@
     "showSources": "Show Sources",
     "insertAtCursor": "Insert / Replace at cursor",
     "regenerate": "Regenerate"
+  },
+  "patternMatching": {
+    "noPatterns": "No patterns specified",
+    "categories": {
+      "tags": "Tags",
+      "extensions": "Extensions",
+      "folders": "Folders",
+      "notes": "Notes"
+    },
+    "addButton": "Add...",
+    "menuItems": {
+      "tag": "Tag",
+      "folder": "Folder",
+      "note": "Note",
+      "extension": "Extension",
+      "custom": "Custom"
+    }
   }
 }
