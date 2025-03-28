@@ -18,7 +18,8 @@
     "warning": "Warning",
     "info": "Info",
     "apply": "Apply",
-    "continue": "Continue"
+    "continue": "Continue",
+    "confirm": "Confirm"
   },
   "chat": {
     "newChat": "New Chat",
@@ -387,6 +388,18 @@
       "note": "Note",
       "extension": "Extension",
       "custom": "Custom"
+    }
+  },
+  "customPattern": {
+    "title": "Add Custom Pattern",
+    "description": "Comma separated list of paths, tags, note titles or file extension e.g. folder1, folder1/folder2, #tag1, #tag2, [[note1]], [[note2]], *.jpg, *.excalidraw.md",
+    "placeholder": "Enter the pattern"
+  },
+  "extensionInput": {
+    "title": "Add Extension",
+    "placeholder": "Enter the extension (e.g. txt, excalidraw.md)",
+    "error": {
+      "noSpaces": "Extension cannot contain spaces"
     }
   }
 }
